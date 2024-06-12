@@ -34,7 +34,7 @@ public:
 
   void addToken(int type, int number, string name, string contents){
 
-    tokenList.push_back(new Token(type,number,name,contents));
+    tokenList.push_back(Token(type,number,name,contents));
 
   }
 
@@ -65,6 +65,13 @@ void printSourceCode(FILE* fp){
 
 }
 
+void error(int num){
+
+
+  exit(num);
+}
+
+
 
 FILE* newline(FILE* fp);
 // Automata that Detects Tokens
@@ -85,7 +92,7 @@ FILE* chooseR(FILE* fp){}
 FILE* then(FILE* fp){}
 FILE* identifier(FILE* fp){}
 FILE* number(FILE* fp){}
-FILE* relop(FILE* fp){}
+FILE* symbol(FILE* fp){}
 FILE* astring(FILE* fp){}
 FILE* startParse(FILE* fp){
 
@@ -96,7 +103,20 @@ FILE* startParse(FILE* fp){
   while (!feof(fp)){
     switch (c) {
 
-    case '\n': fputc('\n', fp); newline(fp); break;
+    case '\n': {fputc('\n', fp); newline(fp); break;}
+    case 'C': {fputc('C', fp); clear(fp); break;}
+    case 'E': {fputc('E', fp); end(fp); break;}
+    case 'G': {fputc('G', fp); chooseG(fp); break;}
+    case 'I': {fputc('I', fp); chooseI(fp); break;}
+    case 'L': {fputc('L', fp); chooseL(fp); break;}
+    case 'P': {fputc('P', fp); print(fp); break;}
+    case 'R': {fputc('R', fp); chooseR(fp); break;}
+    case 'T': {fputc('T', fp); then(fp); break;}
+    case '"': fputc('"', fp); newline(fp); break;
+    default:
+      if(c >= 'A' && c <= 'Z') fp = identifier(fp);
+      if(c >= '0' && c <= '9') fp = number(fp);
+      fp = symbol(fp);
     }
 
   }
