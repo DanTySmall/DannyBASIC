@@ -5,17 +5,47 @@
 #include <list>
 #include <cstring>
 #include <string>
+#include <vector>
 using namespace std;
-// This is the Parser for DannyBasic: A compiler for TinyBasic made by Daniel Sll
+// This is the Parser for DannyBasic: A compiler for TinyBasic made by Daniel Small
+enum keyword {
+  ID,
+  NUMBER,
+  CR,
+  CLEAR,
+  END,
+  GOTO,
+  GOSUB,
+  INPUT,
+  IF,
+  LET,
+  LIST,
+  PRINT,
+  RETURN,
+  RUN,
+  THEN,
+  LSS,
+  LEQ,
+  NEQ,
+  NNEQ,
+  GEQ,
+  GTR,
+  ADD,
+  SUB,
+  DIV,
+  MOD,
+  MULT,
+  STRING
+};
 
 class Token {
 public:
-  int tokenType;
+  keyword tokenType;
   int number;
   string name;
   string contents;
 
-  Token(int tT, int number, string name, string contents){
+  Token(keyword tT, int number, string name, string contents){
     this-> tokenType = tT;
     this-> number = number;
     this-> name = name;
@@ -29,8 +59,8 @@ public:
   std::list<Token> tokenList;
   std::string keywords[27] = {"Identifier", "Number", "CR", "CLEAR", "END", "GOTO", "GOSUB",
     "INPUT", "IF", "LET", "LIST", "PRINT", "RETURN", "RUN", "THEN", "<", "<=", "<>", "><", ">=",
-">" ,"+" ,"_" ,"/" ,"%", "*", "string"};
-  void addToken(int type, int number, string name, string contents){
+">" ,"+" ,"_" ,"/" ,"%", "*", "STRING"};
+  void addToken(keyword type, int number, string name, string contents){
 
     tokenList.push_back(Token(type,number,name,contents));
 
@@ -40,7 +70,10 @@ public:
   void printAllTokens(){
 
     for (Token token: tokenList ){
-     cout << keywords[token.tokenType] << endl;
+      if(token.tokenType == STRING){
+      cout << keywords[token.tokenType] << "\t" << token.contents << endl;
+      }else
+        cout << keywords[token.tokenType] << endl;
     }
 
   }
@@ -71,21 +104,22 @@ void error(int num){
 FILE* newline(FILE* fp);
 FILE* identifier(FILE* fp);
 // Automata that Detects Tokens
-FILE* newline(FILE* fp){
+int newline(ifstream* source){
 
   // NULL CHECK
-  if (!fp) return fp;
+  if (!source -> good()) return !source -> good();
 
   // Check for carriage return CR
-  if (char c = fgetc(fp) == '\n')
-    tl.addToken(3,0,NULL,NULL);
+  char c;
+  source->get(c);
+  if (c == '\n')
+    tl.addToken(keyword::CR,0,"","");
   else{
-    fputc(c,fp);
+    source->putback(c);
     error(2);
   }
 
-
-  return fp;
+  return source->good();
 }
 int clear(ifstream* source){
 
@@ -116,14 +150,496 @@ int clear(ifstream* source){
 
     // Keyword was found, add token to list
     if(i == length-1){
-      // Make sure this is the right token number, it might have change from when this was written
-      tl.addToken(4, 0, "", "");
-      printf("Found!\n");
+
+      // Make sure this is the right token number, it might have change from when this was eritten
+      tl.addToken(CLEAR, 0, "", "");
+      break;
+
     }
 
     source->get(c);
 
   }
+
+  return source->good();
+}
+int end(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Keyword and Buffer
+  char keyword[] = "END";
+  char buffer[3];
+  char c;
+  int length = strlen(keyword);
+
+  // Check for each letter of keyword
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      for(int j = i; j  >= 0; j--)source->putback(buffer[i]);
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(END, 0, "", "");
+      break;
+
+    }
+
+    source->get(c);
+
+  }
+
+  return source->good();
+}
+int chooseG(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Keyword and Buffer
+  string keyword = "GOTO";
+  char* buffer = new char[keyword.length()];
+  char c;
+  int length = keyword.length();
+
+  // Check for each letter of keyword
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(GOTO, 0, "", "");
+      source->putback(c);
+      return source->good();
+
+    }
+
+    source->get(c);
+
+  }
+
+  delete(buffer);
+  keyword = "GOSUB";
+  length = keyword.length();
+  buffer = new char[length];
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      for(int j = i; j  >= 0; j--)source->putback(buffer[j]);
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(GOSUB, 0, "", "");
+      break;
+
+    }
+
+    source->get(c);
+
+  }
+
+  source->putback(c);
+  return source->good();
+}
+int chooseI(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Keyword and Buffer
+  string keyword = "IF";
+  char c;
+  int length = keyword.length();
+  char* buffer = new char[length];
+
+  // Check for each letter of keyword
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(IF, 0, "", "");
+      source->putback(c);
+      return source->good();
+
+    }
+
+    source->get(c);
+
+  }
+
+  delete(buffer);
+  keyword = "INPUT";
+  length = keyword.length();
+  buffer = new char[length];
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      for(int j = i; j  >= 0; j--)source->putback(buffer[j]);
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(INPUT, 0, "", "");
+      break;
+
+    }
+
+    source->get(c);
+
+  }
+
+  delete(buffer);
+  return source->good();
+}
+int chooseL(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Keyword and Buffer
+  string keyword = "LET";
+  char c;
+  int length = keyword.length();
+  char* buffer = new char[length];
+
+  // Check for each letter of keyword
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(LET, 0, "", "");
+      // source->putback(c);
+      return source->good();
+
+    }
+
+    source->get(c);
+
+  }
+
+  delete(buffer);
+  keyword = "LIST";
+  length = keyword.length();
+  buffer = new char[length];
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      for(int j = i; j  >= 0; j--)source->putback(buffer[j]);
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(LIST, 0, "", "");
+      break;
+
+    }
+
+    source->get(c);
+
+  }
+
+  delete(buffer);
+  // source->putback(c);
+  return source->good();
+}
+int print(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Keyword and Buffer
+  char keyword[] = "PRINT";
+  char buffer[3];
+  char c;
+  int length = strlen(keyword);
+
+  // Check for each letter of keyword
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      for(int j = i; j  >= 0; j--)source->putback(buffer[i]);
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(PRINT, 0, "", "");
+      break;
+
+    }
+
+    source->get(c);
+
+  }
+
+  // source->putback(c);
+  return source->good();
+}
+int chooseR(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Keyword and Buffer
+  string keyword = "RETURN";
+  char c;
+  int length = keyword.length();
+  char* buffer = new char[length];
+
+  // Check for each letter of keyword
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(RETURN, 0, "", "");
+      source->putback(c);
+      return source->good();
+
+    }
+
+    source->get(c);
+
+  }
+
+  delete(buffer);
+  keyword = "RUN";
+  length = keyword.length();
+  buffer = new char[length];
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      for(int j = i; j  >= 0; j--)source->putback(buffer[j]);
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(RUN, 0, "", "");
+      break;
+
+    }
+
+    source->get(c);
+
+  }
+
+  delete(buffer);
+  source->putback(c);
+  return source->good();
+}
+int then(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Keyword and Buffer
+  char keyword[] = "THEN";
+  char buffer[3];
+  char c;
+  int length = strlen(keyword);
+
+  // Check for each letter of keyword
+  source->get(c);
+  for (int i = 0; i < length; i++){
+
+    // If you reach end, treat what is in buffer as an identifier
+    // if (source->eof()) {fp = identifier(fp); return fp;}
+
+    // Check if char is in keyword
+    if(c == keyword[i]) { // if match put char in buffer
+      buffer[i] = keyword[i];
+    }else{ // if it doesnt match, put everything back and call identifier
+      for(int j = i; j  >= 0; j--)source->putback(buffer[i]);
+      // fp = identifier(fp);
+      break;
+    }
+
+    // Keyword was found, add token to list
+    if(i == length-1){
+
+      // Make sure this is the right token number, it might have change from when this was written
+      tl.addToken(THEN, 0, "", "");
+      break;
+
+    }
+
+    source->get(c);
+
+  }
+
+  // source->putback(c);
+  return source->good();
+}
+int String(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Check for Open Quotes
+  char c;
+  source->get(c);
+  if (c != '"') error(3);
+  source->get(c);
+
+  // Obtain String Contents
+  vector<char> contents = {};
+  while(c != '"'){
+
+    // Add Char to Vector
+    contents.push_back(c);
+
+    // Get Char
+    source->get(c);
+
+    // Your going to need to check if the program has reached end of file
+
+  }
+
+  // Remove Closing Quotes
+  source->get(c);
+
+  // Add String to TokenList
+  string content(contents.begin(),contents.end());
+  tl.addToken(keyword::STRING,0,"",content);
 
   return source->good();
 }
@@ -149,22 +665,23 @@ int startParse(ifstream* source){
     if(c == ' ' || c == '\t') {source->get(c); continue;}
     switch (c) {
 
-    case '\n': {source->putback('\n'); clear(source); cout << "CR DETECTED"; break;}
-    case 'C': {source->putback('C'); source -> get(c); break;}
-    // case 'E': {fputc('E', fp); end(fp); break;}
-    // case 'G': {fputc('G', fp); chooseG(fp); break;}
-    // case 'I': {fputc('I', fp); chooseI(fp); break;}
-    // case 'L': {fputc('L', fp); chooseL(fp); break;}
-    // case 'P': {fputc('P', fp); print(fp); break;}
-    // case 'R': {fputc('R', fp); chooseR(fp); break;}
-    // case 'T': {fputc('T', fp); then(fp); break;}
-    // case '"': fputc('"', fp); newline(fp); break;
+    case '\n': {source->putback('\n'); newline(source); break;}
+    case 'C': {source->putback('C'); clear(source); break;}
+    case 'E': {source->putback('E'); end(source); break;}
+    case 'G': {source->putback('G'); chooseG(source); break;}
+    case 'I': {source->putback('I'); chooseI(source); break;}
+    case 'L': {source->putback('L'); chooseL(source); break;}
+    case 'P': {source->putback('P'); print(source); break;}
+    case 'R': {source->putback('R'); chooseR(source); break;}
+    case 'T': {source->putback('T'); then(source); break;}
+    case '"': {source->putback('"'); String(source); break;}
     // default:
     //   if(c >= 'A' && c <= 'Z') fp = identifier(fp);
     //   if(c >= '0' && c <= '9') fp = number(fp);
     //   fp = symbol(fp);
-    }
+    //
 
+    }
   }
 
   return 0;
@@ -201,7 +718,7 @@ int main(int argc, char *argv[]) {
 
   startParse(&source);
 
-  // tl.printAllTokens();
+  tl.printAllTokens();
 
   source.close();
   return 0;
