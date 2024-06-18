@@ -71,7 +71,11 @@ public:
 
     for (Token token: tokenList ){
       if(token.tokenType == STRING){
-      cout << keywords[token.tokenType] << "\t" << token.contents << endl;
+        cout << keywords[token.tokenType] << "\t" << token.contents << endl;
+      }else if(token.tokenType == NUMBER){
+        cout << keywords[token.tokenType] << "\t" << token.number << endl;
+      }else if(token.tokenType == ID){
+        cout << keywords[token.tokenType] << "\t" << token.name << endl;
       }else
         cout << keywords[token.tokenType] << endl;
     }
@@ -643,6 +647,51 @@ int String(ifstream* source){
 
   return source->good();
 }
+int id(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Check for English Letter
+  char c;
+  source->get(c);
+  if (c >= 'A' && c <= 'Z')
+    tl.addToken(keyword::ID,0,string(&c),"");
+  else{
+    source->putback(c);
+    error(2);
+  }
+
+  return source->good();
+}
+
+int number(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Receive number and check if too big
+  int limit = (1<< 15);
+  int current = 0;
+  char c;
+  source->get(c);
+  if(!(c >= '0' && c <= '9')) error(4);
+  while(c >= '0' && c <= '9'){
+
+    if(current > limit) error(5);
+    current *= 10;
+    current += c - '0';
+    source->get(c);
+
+  }
+  source->putback(c);
+
+  // Add to TokenList
+  tl.addToken(keyword::NUMBER,current,"","");
+
+  return source->good();
+}
+
 
 // FILE* end(FILE* fp){}
 // FILE* chooseG(FILE* fp){}
@@ -675,9 +724,10 @@ int startParse(ifstream* source){
     case 'R': {source->putback('R'); chooseR(source); break;}
     case 'T': {source->putback('T'); then(source); break;}
     case '"': {source->putback('"'); String(source); break;}
-    // default:
-    //   if(c >= 'A' && c <= 'Z') fp = identifier(fp);
-    //   if(c >= '0' && c <= '9') fp = number(fp);
+    default:
+      if(c >= 'A' && c <= 'Z') {source->putback(c); id(source); break;}
+      if(c >= '0' && c <= '9') {source->putback(c); number(source); break;}
+    //   Non-Alphanumeric Symbols and invalid symbols
     //   fp = symbol(fp);
     //
 
