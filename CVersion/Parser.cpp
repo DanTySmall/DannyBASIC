@@ -35,7 +35,9 @@ enum keyword {
   DIV,
   MOD,
   MULT,
-  STRING
+  STRING,
+  EQL,
+  EQUALITY
 };
 
 class Token {
@@ -57,9 +59,9 @@ public:
 class TokenList{
 public:
   std::list<Token> tokenList;
-  std::string keywords[27] = {"Identifier", "Number", "CR", "CLEAR", "END", "GOTO", "GOSUB",
+  std::string keywords[29] = {"Identifier", "Number", "CR", "CLEAR", "END", "GOTO", "GOSUB",
     "INPUT", "IF", "LET", "LIST", "PRINT", "RETURN", "RUN", "THEN", "<", "<=", "<>", "><", ">=",
-">" ,"+" ,"_" ,"/" ,"%", "*", "STRING"};
+">" ,"+" ,"_" ,"/" ,"%", "*", "STRING","=","=="};
   void addToken(keyword type, int number, string name, string contents){
 
     tokenList.push_back(Token(type,number,name,contents));
@@ -693,17 +695,51 @@ int number(ifstream* source){
 }
 
 
-// FILE* end(FILE* fp){}
-// FILE* chooseG(FILE* fp){}
-// FILE* chooseI(FILE* fp){}
-// FILE* chooseL(FILE* fp){}
-// FILE* print(FILE* fp){}
-// FILE* chooseR(FILE* fp){}
-// FILE* then(FILE* fp){}
-// FILE* identifier(FILE* fp){}
-// FILE* number(FILE* fp){}
-// FILE* symbol(FILE* fp){}
-// FILE* astring(FILE* fp){}
+int symbol(ifstream* source){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Check for carriage return CR
+  char c;
+  source->get(c);
+  switch (c) {
+
+  case '<': {
+    source->get(c);
+    if(c == '=')tl.addToken(keyword::LEQ,0,"",""); // Less than or Equal to
+    else if(c == '>')tl.addToken(keyword::NEQ,0,"",""); // Not Equal
+    else{source->putback(c); tl.addToken(keyword::LSS,0,"","");}// Less than
+    break;
+  }
+
+  case '>': {
+    source->get(c);
+    if(c == '=')tl.addToken(keyword::GEQ,0,"","");// Greater than or Equal to
+    else if(c == '<')tl.addToken(keyword::NEQ,0,"","");// Not Equal
+    else{source->putback(c); tl.addToken(keyword::GTR,0,"","");}// Greater Than
+    break;
+  }
+
+  case '+': {tl.addToken(keyword::ADD,0,"",""); break;}// Addition
+  case '-': {tl.addToken(keyword::SUB,0,"",""); break;}// Subtraction
+  case '/': {tl.addToken(keyword::DIV,0,"",""); break;}// Division
+  case '%': {tl.addToken(keyword::MOD,0,"",""); break;}// Modulus
+  case '*': {tl.addToken(keyword::MULT,0,"",""); break;}// Multiplication
+  case '=': {
+    source->get(c);
+    if(c == '=')tl.addToken(keyword::EQUALITY,0,"",""); // Equality
+    else{source->putback(c); tl.addToken(keyword::EQL,0,"","");}// Assignment
+    break;
+  }
+
+  default: error(6);
+  }
+
+
+  return source->good();
+}
+
 int startParse(ifstream* source){
 
   // NULL CHECK
@@ -728,7 +764,8 @@ int startParse(ifstream* source){
       if(c >= 'A' && c <= 'Z') {source->putback(c); id(source); break;}
       if(c >= '0' && c <= '9') {source->putback(c); number(source); break;}
     //   Non-Alphanumeric Symbols and invalid symbols
-    //   fp = symbol(fp);
+      source->putback(c);
+      symbol(source);
     //
 
     }
