@@ -747,7 +747,7 @@ int startParse(ifstream* source){
 
   char c;
   while (source->get(c)) {
-    if(c == ' ' || c == '\t') {source->get(c); continue;}
+    if(c == ' ' || c == '\t') source->get(c);
     switch (c) {
 
     case '\n': {source->putback('\n'); newline(source); break;}
