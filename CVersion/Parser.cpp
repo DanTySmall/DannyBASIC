@@ -246,7 +246,6 @@ int chooseG(ifstream* source){
 
       // Make sure this is the right token number, it might have change from when this was written
       tl.addToken(GOTO, 0, "", "");
-      source->putback(c);
       return source->good();
 
     }
@@ -325,7 +324,7 @@ int chooseI(ifstream* source){
 
       // Make sure this is the right token number, it might have change from when this was written
       tl.addToken(IF, 0, "", "");
-      source->putback(c);
+      // source->putback(c);
       return source->good();
 
     }
