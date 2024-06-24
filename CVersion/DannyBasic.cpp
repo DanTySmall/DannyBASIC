@@ -1,5 +1,13 @@
 #include <iostream>
-#include "Parse.h"
+#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <list>
+#include <cstring>
+#include <string>
+#include <vector>
+#include "Parse.cpp"
+#include "Syntax.cpp"
 using namespace std;
 
 int main(int argc, char *argv[]) {
