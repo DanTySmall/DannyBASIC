@@ -8,6 +8,7 @@
 #include <vector>
 using namespace std;
 // This is the Parser for DannyBasic: A compiler for TinyBasic made by Daniel Small
+
 enum keyword {
   ID,
   NUMBER,
@@ -55,7 +56,6 @@ public:
   }
 };
 
-// UNTESTED
 class TokenList{
 public:
   std::list<Token> tokenList;
@@ -66,6 +66,16 @@ public:
 
     tokenList.push_back(Token(type,number,name,contents));
 
+  }
+
+  Token peek(){
+
+   return tokenList.front();
+
+  }
+
+  void pop(){
+    tokenList.pop_front();
   }
 
   // TODO: Print More than just tokenType
@@ -101,14 +111,13 @@ void printSourceCode(ifstream* source){
   printf("\n\n");
 }
 
+// Print Error and Exits Program
 void error(int num){
 
 
   exit(num);
 }
 
-FILE* newline(FILE* fp);
-FILE* identifier(FILE* fp);
 // Automata that Detects Tokens
 int newline(ifstream* source){
 
@@ -665,7 +674,6 @@ int id(ifstream* source){
 
   return source->good();
 }
-
 int number(ifstream* source){
 
   // NULL CHECK
@@ -692,8 +700,6 @@ int number(ifstream* source){
 
   return source->good();
 }
-
-
 int symbol(ifstream* source){
 
   // NULL CHECK
@@ -738,7 +744,6 @@ int symbol(ifstream* source){
 
   return source->good();
 }
-
 int startParse(ifstream* source){
 
   // NULL CHECK
