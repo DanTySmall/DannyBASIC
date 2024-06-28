@@ -7,7 +7,9 @@
 #include <string>
 #include <vector>
 using namespace std;
-// // This is the Parser for DannyBasic: A compiler for TinyBasic made by Daniel Small
+// This is the Parser for DannyBasic: A compiler for TinyBasic made by Daniel Small
+
+// Token Types
 enum keyword {
   ID,
   NUMBER,
@@ -39,6 +41,8 @@ enum keyword {
   EQL,
   EQUALITY
 };
+
+// Tokens
 class Token {
 public:
   keyword tokenType;
@@ -53,6 +57,8 @@ public:
     this-> contents = contents;
   }
 };
+
+// List That Holds Tokens
 class TokenList{
 public:
   void printAllTokens();
@@ -62,13 +68,12 @@ public:
     ">" ,"+" ,"_" ,"/" ,"%", "*", "STRING","=","=="};
 
   void addToken(keyword type, int number, string name, string contents){
-
     tokenList.push_back(Token(type,number,name,contents));
-
   }
 };
 
-  void TokenList::printAllTokens(){
+// Prints All Tokens In List
+void TokenList::printAllTokens(){
 
     for (Token token: tokenList ){
       if(token.tokenType == STRING){
@@ -82,6 +87,7 @@ public:
     }
 
   }
+
 // Print the Source Code
 void printSourceCode(std::ifstream* source){
   if(!source->good()) return;
@@ -95,6 +101,7 @@ void printSourceCode(std::ifstream* source){
   printf("\n\n");
 }
 
+// Print Error and Exits Program
 void error(int num){
 
   exit(num);
