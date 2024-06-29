@@ -209,8 +209,11 @@ int end(ifstream* source, TokenList* tl){
     if(c == keyword[i]) { // if match put char in buffer
       buffer[i] = keyword[i];
     }else{ // if it doesnt match, put everything back and call identifier
-      for(int j = i; j  >= 0; j--)source->putback(buffer[i]);
-      // fp = identifier(fp);
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      id(source, tl);
       break;
     }
 
@@ -286,8 +289,11 @@ int chooseG(ifstream* source, TokenList* tl){
     if(c == keyword[i]) { // if match put char in buffer
       buffer[i] = keyword[i];
     }else{ // if it doesnt match, put everything back and call identifier
-      for(int j = i; j  >= 0; j--)source->putback(buffer[j]);
-      // fp = identifier(fp);
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      id(source,tl);
       break;
     }
 
@@ -333,7 +339,7 @@ int chooseI(ifstream* source, TokenList* tl){
       for(int j = i-1; j  >= 0; j--){
         source->putback(buffer[j]);
       }
-      // fp = identifier(fp);
+      id(source, tl);
       break;
     }
 
@@ -365,8 +371,11 @@ int chooseI(ifstream* source, TokenList* tl){
     if(c == keyword[i]) { // if match put char in buffer
       buffer[i] = keyword[i];
     }else{ // if it doesnt match, put everything back and call identifier
-      for(int j = i; j  >= 0; j--)source->putback(buffer[j]);
-      // fp = identifier(fp);
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      id(source,tl);
       break;
     }
 
@@ -412,6 +421,7 @@ int chooseL(ifstream* source, TokenList* tl){
       for(int j = i-1; j  >= 0; j--){
         source->putback(buffer[j]);
       }
+      id(source,tl);
       // fp = identifier(fp);
       break;
     }
@@ -444,8 +454,11 @@ int chooseL(ifstream* source, TokenList* tl){
     if(c == keyword[i]) { // if match put char in buffer
       buffer[i] = keyword[i];
     }else{ // if it doesnt match, put everything back and call identifier
-      for(int j = i; j  >= 0; j--)source->putback(buffer[j]);
-      // fp = identifier(fp);
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      id(source,tl);
       break;
     }
 
@@ -488,8 +501,11 @@ int print(ifstream* source, TokenList* tl){
     if(c == keyword[i]) { // if match put char in buffer
       buffer[i] = keyword[i];
     }else{ // if it doesnt match, put everything back and call identifier
-      for(int j = i; j  >= 0; j--)source->putback(buffer[i]);
-      // fp = identifier(fp);
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      id(source,tl);
       break;
     }
 
@@ -535,6 +551,7 @@ int chooseR(ifstream* source, TokenList* tl){
       for(int j = i-1; j  >= 0; j--){
         source->putback(buffer[j]);
       }
+      id(source, tl);
       // fp = identifier(fp);
       break;
     }
@@ -567,8 +584,11 @@ int chooseR(ifstream* source, TokenList* tl){
     if(c == keyword[i]) { // if match put char in buffer
       buffer[i] = keyword[i];
     }else{ // if it doesnt match, put everything back and call identifier
-      for(int j = i; j  >= 0; j--)source->putback(buffer[j]);
-      // fp = identifier(fp);
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      id(source,tl);
       break;
     }
 
@@ -611,8 +631,11 @@ int then(ifstream* source, TokenList* tl){
     if(c == keyword[i]) { // if match put char in buffer
       buffer[i] = keyword[i];
     }else{ // if it doesnt match, put everything back and call identifier
-      for(int j = i; j  >= 0; j--)source->putback(buffer[i]);
-      // fp = identifier(fp);
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      id(source,tl);
       break;
     }
 
