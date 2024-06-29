@@ -108,6 +108,23 @@ void error(int num){
 }
 
 // Automata that Detects Tokens
+int id(ifstream* source, TokenList* tl){
+
+  // NULL CHECK
+  if (!source -> good()) return !source -> good();
+
+  // Check for English Letter
+  char c;
+  source->get(c);
+  if (c >= 'A' && c <= 'Z')
+    tl->addToken(keyword::ID,0,string(&c),"");
+  else{
+    source->putback(c);
+    error(2);
+  }
+
+  return source->good();
+}
 int newline(ifstream* source, TokenList* tl){
 
   // NULL CHECK
@@ -147,8 +164,11 @@ int clear(ifstream* source, TokenList* tl){
     if(c == keyword[i]) { // if match put char in buffer
       buffer[i] = keyword[i];
     }else{ // if it doesnt match, put everything back and call identifier
-      for(int j = i; j  >= 0; j--)source->putback(buffer[i]);
-      // fp = identifier(fp);
+      source->putback(c);
+      for(int j = i-1; j  >= 0; j--){
+        source->putback(buffer[j]);
+      }
+      id(source, tl);
       break;
     }
 
@@ -235,7 +255,7 @@ int chooseG(ifstream* source, TokenList* tl){
       for(int j = i-1; j  >= 0; j--){
         source->putback(buffer[j]);
       }
-      // fp = identifier(fp);
+      id(source,tl);
       break;
     }
 
@@ -646,23 +666,6 @@ int String(ifstream* source, TokenList* tl){
 
   return source->good();
 }
-int id(ifstream* source, TokenList* tl){
-
-  // NULL CHECK
-  if (!source -> good()) return !source -> good();
-
-  // Check for English Letter
-  char c;
-  source->get(c);
-  if (c >= 'A' && c <= 'Z')
-    tl->addToken(keyword::ID,0,string(&c),"");
-  else{
-    source->putback(c);
-    error(2);
-  }
-
-  return source->good();
-}
 int number(ifstream* source, TokenList* tl){
 
   // NULL CHECK
@@ -743,7 +746,9 @@ TokenList*  startParse(ifstream* source){
   TokenList* tl = new TokenList();
 
   char c;
-  while (source->get(c)) {
+  while (source->good()) {
+
+    source->get(c);
     if(c == ' ' || c == '\t') source->get(c);
     switch (c) {
 
@@ -760,7 +765,7 @@ TokenList*  startParse(ifstream* source){
     default:
       if(c >= 'A' && c <= 'Z') {source->putback(c); id(source,tl); break;}
       if(c >= '0' && c <= '9') {source->putback(c); number(source,tl); break;}
-    //   Non-Alphanumeric Symbols and invalid symbols
+      // Non-Alphanumeric Symbols and invalid symbols
       source->putback(c);
       symbol(source,tl);
 
