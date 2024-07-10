@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "Parse.h"
+#include "Syntax.hpp"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -28,5 +29,9 @@ int main(int argc, char *argv[]) {
 
   // Closes File and Exits Program
   source.close();
+
+  // Generates Code From Tokens
+  generateCode(tl);
+
   return 0;
 }

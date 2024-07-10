@@ -1,4 +1,16 @@
-// // #include "Parse.cpp"
+#include "Parse.h"
+
+// Holds The Instructions
+vector<int> instructs;
+
+
+// Generates Instructrions
+int generateCode(TokenList* tl){
+
+
+  cout << "This is a Working Program" << endl;
+  return 0;
+};
 
 // // // int line(){
 
