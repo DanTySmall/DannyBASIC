@@ -6,16 +6,49 @@ vector<int> lineNums;
 TokenList* tl;
 
 
+int genStatement(){
+
+  Token currentToken = tl -> tokenList.front();
+ switch (currentToken.tokenType) {
+
+ case keyword::PRINT: {cout << "This is a PRINT Statement" << endl; break;}
+ case keyword::IF: {cout << "This is a IF Statement" << endl; break;}
+ case keyword::GOTO: {cout << "This is a GOTO Statement" << endl; break;}
+ case keyword::INPUT: {cout << "This is a INPUT Statement" << endl; break;}
+ case keyword::LET: {cout << "This is a LET Statement" << endl; break;}
+ case keyword::GOSUB: {cout << "This is a GOSUB Statement" << endl; break;}
+ case keyword::RETURN: {cout << "This is a RETURN Statement" << endl; break;}
+ case keyword::CLEAR: {cout << "This is a CLEAR Statement" << endl; break;}
+ case keyword::LIST: {cout << "This is a LIST Statement" << endl; break;}
+ case keyword::RUN: {cout << "This is a RUN Statement" << endl; break;}
+ case keyword::END: {cout << "This is a END Statement" << endl; break;}
+ default: {cout << "ERROR: String cant be parsed"; exit(1);}
+
+ }
+
+
+
+
+  return 1;
+
+}
 int line(){
 
   // Keeping Track of Line numbers
   int lineNum = 0;
-  cout << "There are " << tl -> tokenList.size() << " Tokens" << endl;
+  // cout << "There are " << tl -> tokenList.size() << " Tokens" << endl;
   if(tl ->tokenList.front().tokenType == keyword::NUMBER) {
     lineNum =tl ->tokenList.front().number;
     lineNums.push_back(tl ->tokenList.front().tokenType);
     tl -> tokenList.pop_front();
   }
+
+  // Print Line
+  cout << "Line at " << lineNum << endl;
+
+  genStatement();
+
+
 
   // Loop Through Tokens Until CR is Found
   Token currentToken = tl ->tokenList.front();
@@ -35,8 +68,6 @@ int line(){
     exit(1);
   }
 
-  // Print Line
-  cout << "Line at " << lineNum << endl;
 
   return 0;
 }
@@ -45,7 +76,7 @@ int line(){
 int generateCode(TokenList* tklist){
 
   tl = tklist;
-  cout << "This is a Working Program" << endl;
+  cout << "===== Code Generation =====" << endl;
 
   // Keep Generating Code Until No Token Left
   while(tl -> tokenList.empty() == false){

@@ -258,7 +258,6 @@ int chooseG(ifstream* source, TokenList* tl){
       for(int j = i-1; j  >= 0; j--){
         source->putback(buffer[j]);
       }
-      id(source,tl);
       break;
     }
 
@@ -310,7 +309,7 @@ int chooseG(ifstream* source, TokenList* tl){
 
   }
 
-  source->putback(c);
+  // source->putback(c);
   return source->good();
 }
 int chooseI(ifstream* source, TokenList* tl){
@@ -339,7 +338,7 @@ int chooseI(ifstream* source, TokenList* tl){
       for(int j = i-1; j  >= 0; j--){
         source->putback(buffer[j]);
       }
-      id(source, tl);
+      // id(source, tl);
       break;
     }
 
@@ -421,7 +420,7 @@ int chooseL(ifstream* source, TokenList* tl){
       for(int j = i-1; j  >= 0; j--){
         source->putback(buffer[j]);
       }
-      id(source,tl);
+      // id(source,tl);
       // fp = identifier(fp);
       break;
     }
@@ -551,7 +550,7 @@ int chooseR(ifstream* source, TokenList* tl){
       for(int j = i-1; j  >= 0; j--){
         source->putback(buffer[j]);
       }
-      id(source, tl);
+      // id(source, tl);
       // fp = identifier(fp);
       break;
     }
@@ -561,7 +560,7 @@ int chooseR(ifstream* source, TokenList* tl){
 
       // Make sure this is the right token number, it might have change from when this was written
       tl->addToken(RETURN, 0, "", "");
-      source->putback(c);
+      // source->putback(c);
       return source->good();
 
     }
@@ -606,7 +605,7 @@ int chooseR(ifstream* source, TokenList* tl){
   }
 
   delete(buffer);
-  source->putback(c);
+  // source->putback(c);
   return source->good();
 }
 int then(ifstream* source, TokenList* tl){
