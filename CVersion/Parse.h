@@ -45,10 +45,15 @@ enum keyword {
 };
 class Token {
 public:
+ keyword tokenType;
+  int number;
+  string name;
+  string contents;
   Token(keyword tT, int number, string name, string contents);
 };
 class TokenList{
 public:
+  std::list<Token> tokenList;
   void addToken(keyword type, int number, string name, string contents);
   void printAllTokens();
 };

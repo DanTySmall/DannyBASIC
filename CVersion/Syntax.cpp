@@ -2,23 +2,61 @@
 
 // Holds The Instructions
 vector<int> instructs;
+vector<int> lineNums;
+TokenList* tl;
 
+
+int line(){
+
+  // Keeping Track of Line numbers
+  int lineNum = 0;
+  cout << "There are " << tl -> tokenList.size() << " Tokens" << endl;
+  if(tl ->tokenList.front().tokenType == keyword::NUMBER) {
+    lineNum =tl ->tokenList.front().number;
+    lineNums.push_back(tl ->tokenList.front().tokenType);
+    tl -> tokenList.pop_front();
+  }
+
+  // Loop Through Tokens Until CR is Found
+  Token currentToken = tl ->tokenList.front();
+  while(currentToken.tokenType != keyword::CR && !tl -> tokenList.empty()){
+
+    tl -> tokenList.pop_front();
+    currentToken = tl ->tokenList.front();
+
+  }
+
+  // TODO: If Line does not end with CR, ERROR
+
+  if (tl ->tokenList.front().tokenType == keyword::CR){
+    tl -> tokenList.pop_front();
+  }else{
+    cout << "ERROR: No Carriage Return After Line" << endl;
+    exit(1);
+  }
+
+  // Print Line
+  cout << "Line at " << lineNum << endl;
+
+  return 0;
+}
 
 // Generates Instructrions
-int generateCode(TokenList* tl){
+int generateCode(TokenList* tklist){
 
-
+  tl = tklist;
   cout << "This is a Working Program" << endl;
+
+  // Keep Generating Code Until No Token Left
+  while(tl -> tokenList.empty() == false){
+
+    line();
+
+  }
+
   return 0;
 };
 
-// // // int line(){
-
-// //     // Number (Optional)
-// //     // Statement
-// //     // CR
-
-// // // }
 
 // // // int statement(){}
 // // // int var_list(){}
