@@ -4,14 +4,187 @@
 vector<int> instructs;
 vector<int> lineNums;
 TokenList* tl;
+int stringCount = 0;
+vector<string> stringData;
 
+
+
+int expression();
+
+
+
+int factor(){
+
+  Token currentToken = tl -> tokenList.front();
+  if (currentToken.tokenType == keyword::ID){
+
+    cout << "LOD 0 " << (int)(currentToken.name.at(0) - 'A') << endl;
+    tl -> tokenList.pop_front();
+  }else if (currentToken.tokenType == keyword::NUMBER){
+    cout << "LIT 0 " << currentToken.number << endl;
+    tl -> tokenList.pop_front();
+  }else if (currentToken.tokenType == keyword::PARENL){
+    tl -> tokenList.pop_front();
+    expression();
+    currentToken = tl -> tokenList.front();
+    // ERROR: No Closing Parenthesis
+    if (currentToken.tokenType != keyword::PARENR){
+      cout <<  "ERROR: No Closing Parenthesis"  << endl;
+      exit(1);
+    }
+  }
+
+  return 1;
+}
+
+int term(){
+
+  Token currentToken = tl -> tokenList.front();
+
+  factor();
+
+  while(currentToken.tokenType == keyword::MULT || currentToken.tokenType == keyword::DIV){
+    if (currentToken.tokenType == keyword::MULT){
+      tl -> tokenList.pop_front();
+      factor();
+      cout << "MULT 0 3";
+    }else if (currentToken.tokenType == keyword::DIV){
+      tl -> tokenList.pop_front();
+      factor();
+      cout << "DIV 0 4";
+  }
+  }
+
+  return 1;
+}
+
+
+int expression() {
+
+  Token currentToken = tl -> tokenList.front();
+
+  int sign = 1;
+  if (currentToken.tokenType == keyword::SUB){
+    sign = -1;
+    tl -> tokenList.pop_front();
+  } else if (currentToken.tokenType == keyword::ADD){
+    tl -> tokenList.pop_front();
+  }
+
+  term();
+  currentToken = tl -> tokenList.front();
+
+  // If First Term is Negative
+  if(sign == -1){
+    cout << "LIT 0 -1" << endl;
+    cout << "MULT 0 3" << endl;
+  }
+
+  // ADD or SUB
+  while(currentToken.tokenType == keyword::ADD || currentToken.tokenType == keyword::SUB){
+    if (currentToken.tokenType == keyword::ADD){
+      tl -> tokenList.pop_front();
+      term();
+      cout << "ADD 0 1 " << endl;
+    }else if (currentToken.tokenType == keyword::SUB){
+      tl -> tokenList.pop_front();
+      term();
+      cout << "SUB 0 2" << endl;
+    }
+
+  currentToken = tl -> tokenList.front();
+  }
+
+ return 1;
+}
+
+int addString(string str){
+
+  // Add string to string vector and return its position
+
+  stringData.push_back(str);
+  return stringData.size() - 1;
+
+}
+
+int expressionList(){
+
+  Token currentToken = tl -> tokenList.front();
+
+  // Check if an Expression or String
+  if (currentToken.tokenType == keyword::STRING){
+
+    cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
+    cout << "SYS 1 " << addString(currentToken.contents) << endl;
+    tl -> tokenList.pop_front();
+    currentToken = tl -> tokenList.front();
+
+  }else{
+
+      cout << "PRINT EXPRESSION" << endl;
+      expression();
+      while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
+        tl -> tokenList.pop_front();
+        currentToken = tl -> tokenList.front();
+      }
+  }
+
+    // At this point, the program is in a list of expression/strings or the end of the line
+    // Check if there are more things to print
+    // currentToken = tl -> tokenList.front();
+    if(currentToken.tokenType == keyword::COMMA){
+
+      while(currentToken.tokenType == keyword::COMMA){
+
+        tl -> tokenList.pop_front();
+        currentToken = tl -> tokenList.front();
+
+        if (currentToken.tokenType == keyword::STRING){
+          cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
+          cout << "SYS 1 " << addString(currentToken.contents) << endl;
+          tl -> tokenList.pop_front();
+          currentToken = tl -> tokenList.front();
+        }else{
+          cout << "PRINT EXPRESSION" << endl;
+          expression();
+          currentToken = tl -> tokenList.front();
+          while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
+            tl -> tokenList.pop_front();
+            currentToken = tl -> tokenList.front();
+          }
+
+        }
+
+      }
+
+    }
+
+
+    return 1;
+}
+
+int generatePRINT(){
+
+  // Check for PRINT
+  Token currentToken = tl -> tokenList.front();
+  if (currentToken.tokenType != keyword::PRINT){
+    cout << "ERROR: Print Statement Missing PRINT" << endl;
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+  // Detect List of Expressions and Strings
+  expressionList();
+
+return 1;
+}
 
 int genStatement(){
 
   Token currentToken = tl -> tokenList.front();
  switch (currentToken.tokenType) {
 
- case keyword::PRINT: {cout << "This is a PRINT Statement" << endl; break;}
+ case keyword::PRINT: {cout << "This is a PRINT Statement" << endl; generatePRINT(); break;}
  case keyword::IF: {cout << "This is a IF Statement" << endl; break;}
  case keyword::GOTO: {cout << "This is a GOTO Statement" << endl; break;}
  case keyword::INPUT: {cout << "This is a INPUT Statement" << endl; break;}
@@ -36,7 +209,6 @@ int line(){
 
   // Keeping Track of Line numbers
   int lineNum = 0;
-  // cout << "There are " << tl -> tokenList.size() << " Tokens" << endl;
   if(tl ->tokenList.front().tokenType == keyword::NUMBER) {
     lineNum =tl ->tokenList.front().number;
     lineNums.push_back(tl ->tokenList.front().tokenType);
@@ -59,11 +231,10 @@ int line(){
 
   }
 
-  // TODO: If Line does not end with CR, ERROR
-
-  if (tl ->tokenList.front().tokenType == keyword::CR){
+  // Line must end with a CR or END OF FILE
+  if (tl ->tokenList.front().tokenType == keyword::CR ){
     tl -> tokenList.pop_front();
-  }else{
+  }else if (!tl -> tokenList.empty()){
     cout << "ERROR: No Carriage Return After Line" << endl;
     exit(1);
   }

@@ -39,7 +39,10 @@ enum keyword {
   MULT,
   STRING,
   EQL,
-  EQUALITY
+  EQUALITY,
+  COMMA,
+  PARENL,
+  PARENR
 };
 
 // Tokens
@@ -63,9 +66,9 @@ class TokenList{
 public:
   void printAllTokens();
   std::list<Token> tokenList;
-  std::string keywords[29] = {"Identifier", "Number", "CR", "CLEAR", "END", "GOTO", "GOSUB",
+  std::string keywords[32] = {"Identifier", "Number", "CR", "CLEAR", "END", "GOTO", "GOSUB",
     "INPUT", "IF", "LET", "LIST", "PRINT", "RETURN", "RUN", "THEN", "<", "<=", "<>", "><", ">=",
-    ">" ,"+" ,"_" ,"/" ,"%", "*", "STRING","=","=="};
+    ">" ,"+" ,"-" ,"/" ,"%", "*", "STRING","=","==",",","(", ")"};
 
   void addToken(keyword type, int number, string name, string contents){
     tokenList.push_back(Token(type,number,name,contents));
@@ -751,6 +754,9 @@ int symbol(ifstream* source, TokenList* tl){
     else{source->putback(c); tl->addToken(keyword::EQL,0,"","");}// Assignment
     break;
   }
+  case ',': {tl->addToken(keyword::COMMA,0,"",""); break;}// COMMA
+  case '(': {tl->addToken(keyword::PARENL,0,"",""); break;}// Left Paraenthese
+  case ')': {tl->addToken(keyword::PARENR,0,"",""); break;}// Right Paraenthese
 
   default: error(6);
   }

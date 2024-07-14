@@ -41,7 +41,10 @@ enum keyword {
   MULT,
   STRING,
   EQL,
-  EQUALITY
+  EQUALITY,
+  COMMA,
+  PARENL,
+  PARENR
 };
 class Token {
 public:
