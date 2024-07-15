@@ -2,10 +2,66 @@
 
 // Holds The Instructions
 vector<int> instructs;
-vector<int> lineNums;
 TokenList* tl;
 int stringCount = 0;
 vector<string> stringData;
+
+class LineAddress {
+public:
+  int lineNum;
+  int instructPtr;
+  LineAddress(int lineNum, int instructPtr){
+    this->lineNum = lineNum;
+    this->instructPtr = instructPtr;
+  }
+
+};
+
+// LATER: This Could Be a Tree
+vector<LineAddress> lineNums;
+
+void addLine (int lineNum){
+
+  // Search Vector for the Smallest Line Number Greater than Line Number
+  int size = lineNums.size();
+  bool added = false;
+  for(int i = 0; i < size; i++){
+
+    // Place New Line Address before
+    if(lineNums[i].lineNum > lineNum){
+      added = true;
+      lineNums.insert(lineNums.begin()+ i, LineAddress(lineNum, instructs.size()));
+      break;
+    }
+  }
+
+  if(!added) lineNums.emplace_back(LineAddress(lineNum, instructs.size()));
+
+}
+
+int addressAtLine(int lineNum){
+
+  // Search Vector for the Smallest Line Number Greater than Line Number
+
+  int size = lineNums.size();
+  bool found = false;
+  for(int i = 0; i < size; i++){
+
+    // Place New Line Address before
+    if(lineNums[i].lineNum == lineNum){
+      found = true;
+      return lineNums[i].instructPtr;
+    }
+  }
+
+  if(!found) {
+    cout << "Error: Undefined Line Number" << endl;
+    exit(1);
+  }
+return instructs.size();
+}
+
+
 
 int expression();
 
@@ -230,8 +286,6 @@ int generateIF(){
   // If False, Go to Jump Address
   instructs[jumpIndex] = instructs.size();
 
-
-
   return 1;
 }
 
@@ -280,10 +334,12 @@ int genStatement(){
 int line(){
 
   // Keeping Track of Line numbers
+
+  // TODO: Hold Remember previous line numbers for non-numbered lines
   int lineNum = 0;
   if(tl ->tokenList.front().tokenType == keyword::NUMBER) {
     lineNum =tl ->tokenList.front().number;
-    lineNums.push_back(tl ->tokenList.front().tokenType);
+    addLine(lineNum);
     tl -> tokenList.pop_front();
   }
 
