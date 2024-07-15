@@ -334,7 +334,7 @@ int varList(){
 
   cout << "SYS 0 2" << endl;
   emit(9,0,2);
-  cout << "LOD 0 " << (currentToken.name.at(0) - 'A') <<  endl;
+  cout << "STO 0 " << (currentToken.name.at(0) - 'A') <<  endl;
   emit(4,0,(currentToken.name.at(0) - 'A'));
 
   tl -> tokenList.pop_front();
@@ -352,7 +352,7 @@ int varList(){
 
     cout << "SYS 0 2" << endl;
     emit(9,0,2);
-    cout << "LOD 0 " << (currentToken.name.at(0) - 'A') <<  endl;
+    cout << "STO 0 " << (currentToken.name.at(0) - 'A') <<  endl;
     emit(4,0,(currentToken.name.at(0) - 'A'));
 
     tl -> tokenList.pop_front();
@@ -370,10 +370,42 @@ int generateINPUT(){
     exit(1);
   }
 
-  tl -> tokenList.pop_front();
 
   varList();
 
+
+  return 1;
+}
+
+int generateLET(){
+
+
+  if (tl -> tokenList.front().tokenType != LET) {
+    cout << "ERROR: INVALID LET STATEMENT";
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+
+  if (tl -> tokenList.front().tokenType != ID) {
+    cout << "ERROR: MISSING VARIABLE IN ASSIGMENT";
+    exit(1);
+  }
+
+  int var = tl -> tokenList.front().name.at(0) - 'A';
+
+  tl -> tokenList.pop_front();
+
+  if (tl -> tokenList.front().tokenType != EQL) {
+    cout << "ERROR: MISSING VARIABLE IN ASSIGMENT";
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+
+  expression();
+  emit(3,0,var);
+  cout << "STO 0 " << var << endl;
 
   return 1;
 }
@@ -387,7 +419,7 @@ int genStatement(){
  case keyword::IF: {cout << "This is a IF Statement" << endl; generateIF(); break;}
  case keyword::GOTO: {cout << "This is a GOTO Statement" << endl; generateGOTO(); break;}
  case keyword::INPUT: {cout << "This is a INPUT Statement" << endl; generateINPUT(); break;}
- case keyword::LET: {cout << "This is a LET Statement" << endl; break;}
+ case keyword::LET: {cout << "This is a LET Statement" << endl; generateLET(); break;}
  case keyword::GOSUB: {cout << "This is a GOSUB Statement" << endl; break;}
  case keyword::RETURN: {cout << "This is a RETURN Statement" << endl; break;}
  case keyword::CLEAR: {cout << "This is a CLEAR Statement" << endl; break;}
