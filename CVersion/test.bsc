@@ -1,1 +1,1 @@
-IF 3 > 5 THEN PRINT "GO!"
+GOTO 50 * (20 + 3)

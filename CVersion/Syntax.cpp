@@ -61,8 +61,6 @@ int addressAtLine(int lineNum){
 return instructs.size();
 }
 
-
-
 int expression();
 
 int genStatement();
@@ -106,18 +104,22 @@ int term(){
 
   factor();
 
+  currentToken = tl -> tokenList.front();
   while(currentToken.tokenType == keyword::MULT || currentToken.tokenType == keyword::DIV){
     if (currentToken.tokenType == keyword::MULT){
       tl -> tokenList.pop_front();
       factor();
       emit(2,0,3);
-      cout << "MULT 0 3";
+      cout << "MULT 0 3" << endl;
     }else if (currentToken.tokenType == keyword::DIV){
       tl -> tokenList.pop_front();
       factor();
       emit(2,0,4);
-      cout << "DIV 0 4";
-  }
+      cout << "DIV 0 4" << endl;
+    }
+
+    currentToken = tl -> tokenList.front();
+
   }
 
   return 1;
@@ -305,6 +307,23 @@ int generatePRINT(){
 return 1;
 }
 
+int generateGOTO(){
+
+  if (tl -> tokenList.front().tokenType != GOTO) {
+    cout << "ERROR: INVALID GOTO STATEMENT";
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+  expression();
+
+  // NOTE: New Commnad ( Jumps to Line Number at Top of Stack )
+  emit(7,1, 0);
+  cout << "JMP 1 0" << endl;
+
+  return 1;
+}
+
 int genStatement(){
 
  Token currentToken = tl -> tokenList.front();
@@ -312,7 +331,7 @@ int genStatement(){
 
  case keyword::PRINT: {cout << "This is a PRINT Statement" << endl; generatePRINT(); break;}
  case keyword::IF: {cout << "This is a IF Statement" << endl; generateIF(); break;}
- case keyword::GOTO: {cout << "This is a GOTO Statement" << endl; break;}
+ case keyword::GOTO: {cout << "This is a GOTO Statement" << endl; generateGOTO(); break;}
  case keyword::INPUT: {cout << "This is a INPUT Statement" << endl; break;}
  case keyword::LET: {cout << "This is a LET Statement" << endl; break;}
  case keyword::GOSUB: {cout << "This is a GOSUB Statement" << endl; break;}
