@@ -10,9 +10,16 @@ vector<string> stringData;
 
 
 int expression();
+int genStatement();
+
+void emit(int op, int l, int m){
+
+  instructs.push_back(op);
+  instructs.push_back(l);
+  instructs.push_back(m);
 
 
-
+}
 int factor(){
 
   Token currentToken = tl -> tokenList.front();
@@ -47,10 +54,12 @@ int term(){
     if (currentToken.tokenType == keyword::MULT){
       tl -> tokenList.pop_front();
       factor();
+      emit(2,0,3);
       cout << "MULT 0 3";
     }else if (currentToken.tokenType == keyword::DIV){
       tl -> tokenList.pop_front();
       factor();
+      emit(2,0,4);
       cout << "DIV 0 4";
   }
   }
@@ -76,7 +85,9 @@ int expression() {
 
   // If First Term is Negative
   if(sign == -1){
+    emit(1, 0, -1);
     cout << "LIT 0 -1" << endl;
+    emit(2, 0, 3);
     cout << "MULT 0 3" << endl;
   }
 
@@ -85,10 +96,12 @@ int expression() {
     if (currentToken.tokenType == keyword::ADD){
       tl -> tokenList.pop_front();
       term();
+      emit(2, 0, 1);
       cout << "ADD 0 1 " << endl;
     }else if (currentToken.tokenType == keyword::SUB){
       tl -> tokenList.pop_front();
       term();
+      emit(2, 0, 3);
       cout << "SUB 0 2" << endl;
     }
 
