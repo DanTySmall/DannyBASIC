@@ -7,9 +7,8 @@ TokenList* tl;
 int stringCount = 0;
 vector<string> stringData;
 
-
-
 int expression();
+
 int genStatement();
 
 void emit(int op, int l, int m){
@@ -20,6 +19,7 @@ void emit(int op, int l, int m){
 
 
 }
+
 int factor(){
 
   Token currentToken = tl -> tokenList.front();
@@ -66,7 +66,6 @@ int term(){
 
   return 1;
 }
-
 
 int expression() {
 
@@ -176,6 +175,66 @@ int expressionList(){
     return 1;
 }
 
+
+// Return or Put in generateIF functions
+int relop(keyword rel){
+
+  switch (rel) {
+  case LSS:{emit(2,0,7); cout << "LSS 0 7" << endl;break;}
+  case EQL:{ emit(2,0,5); cout << "EQL 0 5" << endl;break;}
+  case NEQ:{ emit(2,0,6); cout << "NEQ 0 6" << endl;break;}
+  case LEQ:{ emit(2,0,6); cout << "LEQ 0 8" << endl;break;}
+  case GTR:{ emit(2,0,9); cout << "GTR 0 9" << endl;break;}
+  case GEQ:{ emit(2,0,10); cout << "GEQ 0 10" << endl;break;}
+  default:
+    cout << "ERROR: Invalid Relative Operator" << endl;
+    exit(1);
+  }
+
+ return 1;
+}
+
+//NOTE: The Need to complete the instruction vector so that the if statement can keep track of the line numbers
+int generateIF(){
+
+  // ====== Condition ======
+  tl -> tokenList.pop_front();
+  expression();
+
+
+  //TODO: Have a Checker for relative operation
+  keyword rel = tl -> tokenList.front().tokenType;
+  tl -> tokenList.pop_front();
+
+  expression();
+  relop(rel);
+
+  cout << "JPC 0 0" << endl;
+  emit(8,0,0);
+
+
+  // Save Location of JPC Command
+  int jumpIndex = instructs.size();
+
+  //====== Condition is finished =====
+  Token currentToken = tl -> tokenList.front();
+
+  if (currentToken.tokenType != keyword::THEN){
+    cout << "ERROR: IF Statements must have Then Statements" << endl;
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+  genStatement();
+
+  // If False, Go to Jump Address
+  instructs[jumpIndex] = instructs.size();
+
+
+
+  return 1;
+}
+
 int generatePRINT(){
 
   // Check for PRINT
@@ -194,11 +253,11 @@ return 1;
 
 int genStatement(){
 
-  Token currentToken = tl -> tokenList.front();
+ Token currentToken = tl -> tokenList.front();
  switch (currentToken.tokenType) {
 
  case keyword::PRINT: {cout << "This is a PRINT Statement" << endl; generatePRINT(); break;}
- case keyword::IF: {cout << "This is a IF Statement" << endl; break;}
+ case keyword::IF: {cout << "This is a IF Statement" << endl; generateIF(); break;}
  case keyword::GOTO: {cout << "This is a GOTO Statement" << endl; break;}
  case keyword::INPUT: {cout << "This is a INPUT Statement" << endl; break;}
  case keyword::LET: {cout << "This is a LET Statement" << endl; break;}
@@ -272,77 +331,3 @@ int generateCode(TokenList* tklist){
   return 0;
 };
 
-
-// // // int statement(){}
-// // // int var_list(){}
-// // // int expr_list(){}
-// // // int expression(){}
-// // // int term(){}
-// // // int var(){}
-// // // int factor(){}
-// // // int string(){}
-// // // int relop(){}
-// // // int syntax( TokenList tl ) {
-
-// // //   // Take all the token
-
-// // //   // Create Function for each variable in grammar
-
-// // //   // If the function returns the file does not have errors
-
-// // //   // Program can be run after this stage
-// // // }
-// // #include <string>
-// // #include <iostream>
-
-// // // This File handles Syntax and Code Generation of the DannyBASIC Compiler
-
-
-// // // Numeric Variable Class
-// // // class numStore{};
-
-// class numVar{
-// public:
-//   int value;
-//   int mark;
-// };
-
-// class numTable{
-// public:
-//   numVar vars[26];
-//   void printTable();
-//   numTable();
-// };
-
-// numTable::numTable(){
-//   for(int i = 0; i < 26; i++ ){
-//     // Set Mark to Zero
-//     vars[i].mark = 0;
-
-//   }
-// }
-
-// // void numTable::printTable(){
-
-// //   for (int i = 0; i < 26; i++){
-// //     if (numTable::vars[i].mark == 0){
-// //       std::cout << "UNUSED" << std::endl;
-// //     }else{
-// //       std::cout << (char)('A' + i) << std::endl;
-// //    }
-// //   }
-// // }
-
-
-
-// // // String Variable Class
-
-// // class stringVar{
-
-// //   std::string s;
-// //   int mark;
-// // };
-
-// // stringVar stringTable[26];
-
-// // // class stringStore{};
