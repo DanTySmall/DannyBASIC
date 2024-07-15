@@ -1,1 +1,1 @@
-GOTO 50 * (20 + 3)
+INPUT A, B, C

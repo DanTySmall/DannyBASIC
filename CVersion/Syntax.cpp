@@ -324,6 +324,60 @@ int generateGOTO(){
   return 1;
 }
 
+int varList(){
+
+  Token currentToken = tl -> tokenList.front();
+  if (currentToken.tokenType != ID) {
+    cout << "ERROR: INVALID VAR LIST";
+    exit(1);
+  }
+
+  cout << "SYS 0 2" << endl;
+  emit(9,0,2);
+  cout << "LOD 0 " << (currentToken.name.at(0) - 'A') <<  endl;
+  emit(4,0,(currentToken.name.at(0) - 'A'));
+
+  tl -> tokenList.pop_front();
+
+  currentToken = tl -> tokenList.front();
+  while (currentToken.tokenType == COMMA){
+
+    tl -> tokenList.pop_front();
+    currentToken = tl -> tokenList.front();
+
+    if (currentToken.tokenType != ID) {
+      cout << "ERROR: INVALID VAR LIST";
+      exit(1);
+    }
+
+    cout << "SYS 0 2" << endl;
+    emit(9,0,2);
+    cout << "LOD 0 " << (currentToken.name.at(0) - 'A') <<  endl;
+    emit(4,0,(currentToken.name.at(0) - 'A'));
+
+    tl -> tokenList.pop_front();
+    currentToken = tl -> tokenList.front();
+  }
+
+  return 1;
+}
+
+int generateINPUT(){
+
+
+  if (tl -> tokenList.front().tokenType != INPUT) {
+    cout << "ERROR: INVALID INPUT STATEMENT";
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+
+  varList();
+
+
+  return 1;
+}
+
 int genStatement(){
 
  Token currentToken = tl -> tokenList.front();
@@ -332,7 +386,7 @@ int genStatement(){
  case keyword::PRINT: {cout << "This is a PRINT Statement" << endl; generatePRINT(); break;}
  case keyword::IF: {cout << "This is a IF Statement" << endl; generateIF(); break;}
  case keyword::GOTO: {cout << "This is a GOTO Statement" << endl; generateGOTO(); break;}
- case keyword::INPUT: {cout << "This is a INPUT Statement" << endl; break;}
+ case keyword::INPUT: {cout << "This is a INPUT Statement" << endl; generateINPUT(); break;}
  case keyword::LET: {cout << "This is a LET Statement" << endl; break;}
  case keyword::GOSUB: {cout << "This is a GOSUB Statement" << endl; break;}
  case keyword::RETURN: {cout << "This is a RETURN Statement" << endl; break;}
