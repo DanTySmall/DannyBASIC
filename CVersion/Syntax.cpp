@@ -468,6 +468,25 @@ int generateCLEAR(){
   return 1;
 }
 
+int generateRUN(){
+
+
+  if (tl -> tokenList.front().tokenType != RUN) {
+    cout << "ERROR: INVALID RUN STATEMENT";
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+
+  int size = instructs.size();
+  instructs.emplace(instructs.begin(), 7);
+  instructs.emplace(instructs.begin() + 1, 0);
+  instructs.emplace(instructs.begin() + 2, instructs.size());
+  cout << "JMP 0 " << instructs.size() << " AT FRONT OF FILE" << endl;
+
+  return 1;
+}
+
 int genStatement(){
 
  Token currentToken = tl -> tokenList.front();
@@ -481,8 +500,8 @@ int genStatement(){
  case keyword::GOSUB: {cout << "This is a GOSUB Statement" << endl; generateGOSUB(); break;}
  case keyword::RETURN: {cout << "This is a RETURN Statement" << endl; generateRETURN(); break;}
  case keyword::CLEAR: {cout << "This is a CLEAR Statement" << endl; generateCLEAR(); break;}
- case keyword::LIST: {cout << "This is a LIST Statement" << endl; break;}
- case keyword::RUN: {cout << "This is a RUN Statement" << endl; break;}
+ // case keyword::LIST: {cout << "This is a LIST Statement" << endl; break;} // FOR INTERPRETER VERSION
+ case keyword::RUN: {cout << "This is a RUN Statement" << endl; generateRUN(); break;}
  case keyword::END: {cout << "This is a END Statement" << endl; break;}
  default: {cout << "ERROR: String cant be parsed"; exit(1);}
 
