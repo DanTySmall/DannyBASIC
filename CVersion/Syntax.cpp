@@ -20,6 +20,53 @@ public:
 // LATER: This Could Be a Tree
 vector<LineAddress> lineNums;
 
+void printCode(){
+
+  cout << "===== Code Output =====" << endl;
+  string instructNames[9];
+
+  // print All the Numbers
+  int size = instructs.size();
+  for (int i = 0; i < size; i += 3) {
+
+    cout << i << ": ";
+
+    switch (instructs[i]) {
+    case 1: cout << "LIT "; break;
+    case 2:
+      switch (instructs[i+2]) {
+      case 1: cout << "RTN "; break;
+      case 2: cout << "ADD "; break;
+      case 3: cout << "SUB "; break;
+      case 4: cout << "MULT "; break;
+      case 5: cout << "DIV "; break;
+      case 6: cout << "EQL "; break;
+      case 7: cout << "NEQ "; break;
+      case 8: cout << "LSS "; break;
+      case 9: cout << "LEQ "; break;
+      case 10: cout << "GTR "; break;
+      case 11: cout << "GEQ "; break;
+      }break;
+
+    case 3: cout << "LOD "; break;
+    case 4: cout << "STO "; break;
+    case 5: cout << "CAL "; break;
+    case 6: cout << "INC  "; break;
+    case 7: cout << "JMP "; break;
+    case 8: cout << "JPC "; break;
+    case 9:
+      switch (instructs[i+2]) {
+      case 1: cout << "SOU "; break;
+      case 2: cout << "SIN "; break;
+      case 3: cout << "HLT "; break;
+      }break;
+    }
+
+    cout << instructs[i+1] << " " << instructs[i+2] << endl;
+  }
+
+}
+
 void addLine (int lineNum){
 
   // Search Vector for the Smallest Line Number Greater than Line Number
@@ -479,9 +526,9 @@ int generateRUN(){
   tl -> tokenList.pop_front();
 
   int size = instructs.size();
+  instructs.emplace(instructs.begin(), instructs.size());
+  instructs.emplace(instructs.begin(), 0);
   instructs.emplace(instructs.begin(), 7);
-  instructs.emplace(instructs.begin() + 1, 0);
-  instructs.emplace(instructs.begin() + 2, instructs.size());
   cout << "JMP 0 " << instructs.size() << " AT FRONT OF FILE" << endl;
 
   return 1;
@@ -582,6 +629,8 @@ int generateCode(TokenList* tklist){
     line();
 
   }
+
+  cout << endl;
 
   return 0;
 };

@@ -35,5 +35,8 @@ int main(int argc, char *argv[]) {
   // Generates Code From Tokens
   generateCode(tl);
 
+  // Print The Generated Code
+  printCode();
+
   return 0;
 }
