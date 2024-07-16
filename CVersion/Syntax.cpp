@@ -487,6 +487,23 @@ int generateRUN(){
   return 1;
 }
 
+int generateEND(){
+
+
+  if (tl -> tokenList.front().tokenType != END) {
+    cout << "ERROR: INVALID END STATEMENT";
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+
+
+  emit(9,0,3);
+  cout << "SYS 0 3" << endl;
+
+ return 1;
+}
+
 int genStatement(){
 
  Token currentToken = tl -> tokenList.front();
@@ -502,7 +519,7 @@ int genStatement(){
  case keyword::CLEAR: {cout << "This is a CLEAR Statement" << endl; generateCLEAR(); break;}
  // case keyword::LIST: {cout << "This is a LIST Statement" << endl; break;} // FOR INTERPRETER VERSION
  case keyword::RUN: {cout << "This is a RUN Statement" << endl; generateRUN(); break;}
- case keyword::END: {cout << "This is a END Statement" << endl; break;}
+ case keyword::END: {cout << "This is a END Statement" << endl; generateEND(); break;}
  default: {cout << "ERROR: String cant be parsed"; exit(1);}
 
  }
