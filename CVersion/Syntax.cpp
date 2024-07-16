@@ -445,6 +445,29 @@ int generateRETURN(){
  return 1;
 }
 
+int generateCLEAR(){
+
+
+  if (tl -> tokenList.front().tokenType != CLEAR) {
+    cout << "ERROR: INVALID CLEAR STATEMENT";
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+
+
+  for(int i = 0; i < 26; i++ ){
+
+
+    emit (1,0,0);
+    cout << "LIT 0 0" << endl;
+    emit (4,0,i);
+    cout << "STO 0 " << i << endl;
+  }
+
+  return 1;
+}
+
 int genStatement(){
 
  Token currentToken = tl -> tokenList.front();
@@ -457,7 +480,7 @@ int genStatement(){
  case keyword::LET: {cout << "This is a LET Statement" << endl; generateLET(); break;}
  case keyword::GOSUB: {cout << "This is a GOSUB Statement" << endl; generateGOSUB(); break;}
  case keyword::RETURN: {cout << "This is a RETURN Statement" << endl; generateRETURN(); break;}
- case keyword::CLEAR: {cout << "This is a CLEAR Statement" << endl; break;}
+ case keyword::CLEAR: {cout << "This is a CLEAR Statement" << endl; generateCLEAR(); break;}
  case keyword::LIST: {cout << "This is a LIST Statement" << endl; break;}
  case keyword::RUN: {cout << "This is a RUN Statement" << endl; break;}
  case keyword::END: {cout << "This is a END Statement" << endl; break;}
