@@ -410,6 +410,41 @@ int generateLET(){
   return 1;
 }
 
+int generateGOSUB() {
+
+
+
+  if (tl -> tokenList.front().tokenType != GOSUB) {
+    cout << "ERROR: INVALID GOSUB STATEMENT";
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+
+  expression();
+  emit(5,0,0);
+  cout<< "CAL 0 0" << endl;
+  emit(6,0,2);
+  cout<< "INC 0 2" << endl;
+
+  return 1;
+}
+
+int generateRETURN(){
+
+  if (tl -> tokenList.front().tokenType != RETURN) {
+    cout << "ERROR: INVALID RETURN STATEMENT";
+    exit(1);
+  }
+
+  tl -> tokenList.pop_front();
+
+  emit(2,0,0);
+  cout << "RTN 0 0" << endl;
+
+ return 1;
+}
+
 int genStatement(){
 
  Token currentToken = tl -> tokenList.front();
@@ -420,8 +455,8 @@ int genStatement(){
  case keyword::GOTO: {cout << "This is a GOTO Statement" << endl; generateGOTO(); break;}
  case keyword::INPUT: {cout << "This is a INPUT Statement" << endl; generateINPUT(); break;}
  case keyword::LET: {cout << "This is a LET Statement" << endl; generateLET(); break;}
- case keyword::GOSUB: {cout << "This is a GOSUB Statement" << endl; break;}
- case keyword::RETURN: {cout << "This is a RETURN Statement" << endl; break;}
+ case keyword::GOSUB: {cout << "This is a GOSUB Statement" << endl; generateGOSUB(); break;}
+ case keyword::RETURN: {cout << "This is a RETURN Statement" << endl; generateRETURN(); break;}
  case keyword::CLEAR: {cout << "This is a CLEAR Statement" << endl; break;}
  case keyword::LIST: {cout << "This is a LIST Statement" << endl; break;}
  case keyword::RUN: {cout << "This is a RUN Statement" << endl; break;}
