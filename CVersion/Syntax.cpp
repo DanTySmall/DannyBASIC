@@ -35,17 +35,17 @@ void printCode(){
     case 1: cout << "LIT "; break;
     case 2:
       switch (instructs[i+2]) {
-      case 1: cout << "RTN "; break;
-      case 2: cout << "ADD "; break;
-      case 3: cout << "SUB "; break;
-      case 4: cout << "MULT "; break;
-      case 5: cout << "DIV "; break;
-      case 6: cout << "EQL "; break;
-      case 7: cout << "NEQ "; break;
-      case 8: cout << "LSS "; break;
-      case 9: cout << "LEQ "; break;
-      case 10: cout << "GTR "; break;
-      case 11: cout << "GEQ "; break;
+      case 0: cout << "RTN "; break;
+      case 1: cout << "ADD "; break;
+      case 2: cout << "SUB "; break;
+      case 3: cout << "MULT "; break;
+      case 4: cout << "DIV "; break;
+      case 5: cout << "EQL "; break;
+      case 6: cout << "NEQ "; break;
+      case 7: cout << "LSS "; break;
+      case 8: cout << "LEQ "; break;
+      case 9: cout << "GTR "; break;
+      case 10: cout << "GEQ "; break;
       }break;
 
     case 3: cout << "LOD "; break;
@@ -56,9 +56,9 @@ void printCode(){
     case 8: cout << "JPC "; break;
     case 9:
       switch (instructs[i+2]) {
-      case 1: cout << "SOU "; break;
-      case 2: cout << "SIN "; break;
-      case 3: cout << "HLT "; break;
+      case 0: cout << "SOU "; break;
+      case 1: cout << "SIN "; break;
+      case 2: cout << "HLT "; break;
       }break;
     }
 
