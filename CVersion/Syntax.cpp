@@ -51,7 +51,7 @@ void printCode(){
     case 3: cout << "LOD "; break;
     case 4: cout << "STO "; break;
     case 5: cout << "CAL "; break;
-    case 6: cout << "INC  "; break;
+    case 6: cout << "INC "; break;
     case 7: cout << "JMP "; break;
     case 8: cout << "JPC "; break;
     case 9:
@@ -89,23 +89,27 @@ void addLine (int lineNum){
 int addressAtLine(int lineNum){
 
   // Search Vector for the Smallest Line Number Greater than Line Number
-
   int size = lineNums.size();
   bool found = false;
+  // cout << "Line Numbers: ";
   for(int i = 0; i < size; i++){
 
     // Place New Line Address before
     if(lineNums[i].lineNum == lineNum){
+      // cout << lineNums[i].lineNum << " ";
       found = true;
       return lineNums[i].instructPtr;
     }
+
   }
+    cout << endl;
 
   if(!found) {
     cout << "Error: Undefined Line Number" << endl;
     exit(1);
   }
-return instructs.size();
+
+  return instructs.size();
 }
 
 int expression();
@@ -126,9 +130,11 @@ int factor(){
   Token currentToken = tl -> tokenList.front();
   if (currentToken.tokenType == keyword::ID){
 
+    emit(3,0,currentToken.name.at(0) - 'A');
     cout << "LOD 0 " << (int)(currentToken.name.at(0) - 'A') << endl;
     tl -> tokenList.pop_front();
   }else if (currentToken.tokenType == keyword::NUMBER){
+    emit(1,0,currentToken.number);
     cout << "LIT 0 " << currentToken.number << endl;
     tl -> tokenList.pop_front();
   }else if (currentToken.tokenType == keyword::PARENL){
@@ -451,7 +457,7 @@ int generateLET(){
   tl -> tokenList.pop_front();
 
   expression();
-  emit(3,0,var);
+  emit(4,0,var);
   cout << "STO 0 " << var << endl;
 
   return 1;
@@ -515,8 +521,9 @@ int generateCLEAR(){
   return 1;
 }
 
+// SUSPENDED: TO BE COMPLETED ON A LATER DAY
 int generateRUN(){
-
+// NOTE: RUN with Line Number will be handled on a different day
 
   if (tl -> tokenList.front().tokenType != RUN) {
     cout << "ERROR: INVALID RUN STATEMENT";
@@ -525,11 +532,11 @@ int generateRUN(){
 
   tl -> tokenList.pop_front();
 
-  int size = instructs.size();
-  instructs.emplace(instructs.begin(), instructs.size());
-  instructs.emplace(instructs.begin(), 0);
-  instructs.emplace(instructs.begin(), 7);
-  cout << "JMP 0 " << instructs.size() << " AT FRONT OF FILE" << endl;
+  // If Line includes Line number
+  if (tl -> tokenList.front().tokenType != CR) {
+    cout << "ERROR: RUN COMMANDS WITH LINE NUMBERS ARE NOT SUPPORTED";
+    exit(1);
+  }
 
   return 1;
 }
@@ -565,7 +572,7 @@ int genStatement(){
  case keyword::RETURN: {cout << "This is a RETURN Statement" << endl; generateRETURN(); break;}
  case keyword::CLEAR: {cout << "This is a CLEAR Statement" << endl; generateCLEAR(); break;}
  // case keyword::LIST: {cout << "This is a LIST Statement" << endl; break;} // FOR INTERPRETER VERSION
- case keyword::RUN: {cout << "This is a RUN Statement" << endl; generateRUN(); break;}
+ case keyword::RUN: {cout << "This is a RUN Statement" << endl; generateRUN(); return 1; break;}
  case keyword::END: {cout << "This is a END Statement" << endl; generateEND(); break;}
  default: {cout << "ERROR: String cant be parsed"; exit(1);}
 
@@ -573,10 +580,10 @@ int genStatement(){
 
 
 
-
-  return 1;
+  return 0;
 
 }
+
 int line(){
 
   // Keeping Track of Line numbers
@@ -590,9 +597,10 @@ int line(){
   }
 
   // Print Line
+
   cout << "Line at " << lineNum << endl;
 
-  genStatement();
+  if (genStatement()) return 1;
 
 
 
@@ -626,8 +634,8 @@ int generateCode(TokenList* tklist){
   // Keep Generating Code Until No Token Left
   while(tl -> tokenList.empty() == false){
 
-    line();
-
+    if(line()) break;
+    cout << endl;
   }
 
   cout << endl;

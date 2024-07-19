@@ -1,2 +1,2 @@
-20 END
-10 RUN
+20 LET B = 40
+10 LET A = 10
