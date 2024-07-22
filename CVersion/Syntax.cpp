@@ -5,6 +5,8 @@ vector<int> instructs;
 TokenList* tl;
 int stringCount = 0;
 vector<string> stringData;
+int lineNumber;
+int nInstructPtr;
 
 class LineAddress {
 public:
@@ -67,6 +69,7 @@ void printCode(){
 
 }
 
+// Creates a Record That holds where every line starts
 void addLine (int lineNum){
 
   // Search Vector for the Smallest Line Number Greater than Line Number
@@ -77,9 +80,12 @@ void addLine (int lineNum){
     // Place New Line Address before
     if(lineNums[i].lineNum > lineNum){
       added = true;
-      lineNums.insert(lineNums.begin()+ i, LineAddress(lineNum, instructs.size()));
+      lineNums.insert(lineNums.begin()+ i, LineAddress(lineNum, lineNums[i].instructPtr));
+      nInstructPtr = lineNums[i].instructPtr;
       break;
-    }
+    } //else(lineNums[i].lineNum == lineNum) { // Line number is being changed
+
+      //}
   }
 
   if(!added) lineNums.emplace_back(LineAddress(lineNum, instructs.size()));
@@ -118,9 +124,18 @@ int genStatement();
 
 void emit(int op, int l, int m){
 
-  instructs.push_back(op);
-  instructs.push_back(l);
-  instructs.push_back(m);
+  // emplace instruction at nInstructPtr
+  // Add 3 to all LineAddress instructPtrs
+
+  instructs.insert(instructs.begin() + nInstructPtr, m);
+  instructs.insert(instructs.begin() + nInstructPtr, l);
+  instructs.insert(instructs.begin() + nInstructPtr, op);
+
+  for (LineAddress line: lineNums){
+    if(line.lineNum > lineNumber) line.instructPtr += 3;
+  }
+
+  nInstructPtr += 3;
 
 
 }
@@ -591,7 +606,9 @@ int line(){
   // TODO: Hold Remember previous line numbers for non-numbered lines
   int lineNum = 0;
   if(tl ->tokenList.front().tokenType == keyword::NUMBER) {
-    lineNum =tl ->tokenList.front().number;
+
+    lineNum = lineNumber = tl ->tokenList.front().number;
+
     addLine(lineNum);
     tl -> tokenList.pop_front();
   }
