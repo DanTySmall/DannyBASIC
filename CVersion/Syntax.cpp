@@ -1,5 +1,5 @@
 #include "Parse.h"
-
+#include <fstream>
 // Holds The Instructions
 vector<int> instructs;
 TokenList* tl;
@@ -230,6 +230,7 @@ int expression() {
       cout << "SUB 0 2" << endl;
     }
 
+
   currentToken = tl -> tokenList.front();
   }
 
@@ -254,6 +255,7 @@ int expressionList(){
 
     cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
     cout << "SYS 1 " << addString(currentToken.contents) << endl;
+          emit(9,1,stringData.size() -1);
     tl -> tokenList.pop_front();
     currentToken = tl -> tokenList.front();
 
@@ -261,6 +263,8 @@ int expressionList(){
 
       cout << "PRINT EXPRESSION" << endl;
       expression();
+          emit(9,0,0);
+      currentToken = tl -> tokenList.front();
       while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
         tl -> tokenList.pop_front();
         currentToken = tl -> tokenList.front();
@@ -269,7 +273,7 @@ int expressionList(){
 
     // At this point, the program is in a list of expression/strings or the end of the line
     // Check if there are more things to print
-    // currentToken = tl -> tokenList.front();
+  currentToken = tl -> tokenList.front();
     if(currentToken.tokenType == keyword::COMMA){
 
       while(currentToken.tokenType == keyword::COMMA){
@@ -280,11 +284,13 @@ int expressionList(){
         if (currentToken.tokenType == keyword::STRING){
           cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
           cout << "SYS 1 " << addString(currentToken.contents) << endl;
+          emit(9,1,stringData.size() -1);
           tl -> tokenList.pop_front();
           currentToken = tl -> tokenList.front();
         }else{
           cout << "PRINT EXPRESSION" << endl;
           expression();
+          emit(9,0,0);
           currentToken = tl -> tokenList.front();
           while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
             tl -> tokenList.pop_front();
@@ -643,6 +649,7 @@ int line(){
 }
 
 // Generates Instructrions
+void printToFile();
 int generateCode(TokenList* tklist){
 
   tl = tklist;
@@ -657,6 +664,24 @@ int generateCode(TokenList* tklist){
 
   cout << endl;
 
+  printToFile();
+
   return 0;
 };
 
+
+// Prints Code to File
+void printToFile(){
+
+ // File
+  ofstream output;
+  output.open("output.dyb");
+  int size = instructs.size();
+  for(int i = 0; i < size; i+= 3 ){
+
+    output << instructs[i] << ' ' << instructs[i+1] << ' ' << instructs[i+2] << endl;
+  }
+
+  output << "\0\0" << endl;
+  output << "Howdy" << endl;
+}
