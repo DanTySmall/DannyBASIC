@@ -683,7 +683,7 @@ int String(ifstream* source, TokenList* tl){
   }
 
   // Remove Closing Quotes
-  source->get(c);
+  // source->get(c);
 
   // Add String to TokenList
   string content(contents.begin(),contents.end());
