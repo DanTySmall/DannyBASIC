@@ -142,11 +142,6 @@ void emit(int op, int l, int m){
 
   }
 
-  // for (LineAddress line: lineNums){
-  //   if(line.lineNum > lineNumber)
-  //     line.instructPtr += 3;
-  // }
-
   int size = lineNums.size();
   for (int i = 0; i < size ; i++){
 
@@ -660,7 +655,6 @@ int line(){
     exit(1);
   }
 
-  printCode();
   return 0;
 }
 
@@ -704,10 +698,21 @@ void printToFile(){
     output << instructs[i] << ' ';
   }
   output << "\0\0";
+  output << endl;
 
   // Print Strings
   for (string s: stringData){
     output << s << '\0';
   }
 
+  output << "\0\0";
+  output << endl;
+
+
+  // Print Line Numbers
+  for (LineAddress line: lineNums){
+
+    output << line.lineNum << ' ' << line.instructPtr << endl;
+
+  }
 }
