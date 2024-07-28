@@ -1,5 +1,6 @@
 #include "Parse.h"
 #include <fstream>
+
 // Holds The Instructions
 vector<int> instructs;
 TokenList* tl;
@@ -57,6 +58,7 @@ void printCode(){
     case 7: cout << "JMP "; break;
     case 8: cout << "JPC "; break;
     case 9:
+      if (instructs[i+1] == 1) {cout << "STR "; break;}
       switch (instructs[i+2]) {
       case 0: cout << "SOU "; break;
       case 1: cout << "SIN "; break;
@@ -88,8 +90,9 @@ void addLine (int lineNum){
       //}
   }
 
-  if(!added) lineNums.emplace_back(LineAddress(lineNum, instructs.size()));
-
+  if(!added) {
+    lineNums.emplace_back(LineAddress(lineNum, instructs.size()));
+    }
 }
 
 int addressAtLine(int lineNum){
@@ -126,13 +129,31 @@ void emit(int op, int l, int m){
 
   // emplace instruction at nInstructPtr
   // Add 3 to all LineAddress instructPtrs
+  if(lineNumber == lineNums[lineNums.size()-1].lineNum){
+
+   instructs.push_back(op);
+   instructs.push_back(l);
+   instructs.push_back(m);
+  }else{
 
   instructs.insert(instructs.begin() + nInstructPtr, m);
   instructs.insert(instructs.begin() + nInstructPtr, l);
   instructs.insert(instructs.begin() + nInstructPtr, op);
 
-  for (LineAddress line: lineNums){
-    if(line.lineNum > lineNumber) line.instructPtr += 3;
+  }
+
+  // for (LineAddress line: lineNums){
+  //   if(line.lineNum > lineNumber)
+  //     line.instructPtr += 3;
+  // }
+
+  int size = lineNums.size();
+  for (int i = 0; i < size ; i++){
+
+    if(lineNums[i].lineNum > lineNumber){
+      lineNums[i].instructPtr +=3;
+    }
+
   }
 
   nInstructPtr += 3;
@@ -161,6 +182,7 @@ int factor(){
       cout <<  "ERROR: No Closing Parenthesis"  << endl;
       exit(1);
     }
+    tl -> tokenList.pop_front();
   }
 
   return 1;
@@ -255,14 +277,14 @@ int expressionList(){
 
     cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
     cout << "SYS 1 " << addString(currentToken.contents) << endl;
-          emit(9,1,stringData.size() -1);
+    emit(9,1,stringData.size() -1);
     tl -> tokenList.pop_front();
     currentToken = tl -> tokenList.front();
 
   }else{
 
       cout << "PRINT EXPRESSION" << endl;
-      expression();
+      expression(); cout << "SYS 0 0" << endl;
           emit(9,0,0);
       currentToken = tl -> tokenList.front();
       while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
@@ -280,7 +302,6 @@ int expressionList(){
 
         tl -> tokenList.pop_front();
         currentToken = tl -> tokenList.front();
-
         if (currentToken.tokenType == keyword::STRING){
           cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
           cout << "SYS 1 " << addString(currentToken.contents) << endl;
@@ -289,7 +310,7 @@ int expressionList(){
           currentToken = tl -> tokenList.front();
         }else{
           cout << "PRINT EXPRESSION" << endl;
-          expression();
+          expression(); cout << "SYS 0 0" << endl;
           emit(9,0,0);
           currentToken = tl -> tokenList.front();
           while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
@@ -306,7 +327,6 @@ int expressionList(){
 
     return 1;
 }
-
 
 // Return or Put in generateIF functions
 int relop(keyword rel){
@@ -542,7 +562,7 @@ int generateCLEAR(){
   return 1;
 }
 
-// SUSPENDED: TO BE COMPLETED ON A LATER DAY
+ // SUSPENDED: TO BE COMPLETED ON A LATER DAY
 int generateRUN(){
 // NOTE: RUN with Line Number will be handled on a different day
 
@@ -625,16 +645,12 @@ int line(){
 
   if (genStatement()) return 1;
 
-
-
   // Loop Through Tokens Until CR is Found
   Token currentToken = tl ->tokenList.front();
-  while(currentToken.tokenType != keyword::CR && !tl -> tokenList.empty()){
-
-    tl -> tokenList.pop_front();
-    currentToken = tl ->tokenList.front();
-
-  }
+  // while(currentToken.tokenType != keyword::CR && !tl -> tokenList.empty()){
+  //   tl -> tokenList.pop_front();
+  //   currentToken = tl ->tokenList.front();
+  // }
 
   // Line must end with a CR or END OF FILE
   if (tl ->tokenList.front().tokenType == keyword::CR ){
@@ -644,7 +660,7 @@ int line(){
     exit(1);
   }
 
-
+  printCode();
   return 0;
 }
 
@@ -676,12 +692,22 @@ void printToFile(){
  // File
   ofstream output;
   output.open("output.dyb");
-  int size = instructs.size();
-  for(int i = 0; i < size; i+= 3 ){
 
-    output << instructs[i] << ' ' << instructs[i+1] << ' ' << instructs[i+2] << endl;
+  // Print Instructions
+  int size = instructs.size();
+  // for(int i = 0; i < size; i+= 3 ){
+  //   output << instructs[i] << ' ' << instructs[i+1] << ' ' << instructs[i+2] << endl;
+  // }
+
+  for(int i = 0; i < size; i++ ){
+    if (i%3 == 0) output << endl;
+    output << instructs[i] << ' ';
+  }
+  output << "\0\0";
+
+  // Print Strings
+  for (string s: stringData){
+    output << s << '\0';
   }
 
-  output << "\0\0" << endl;
-  output << "Howdy" << endl;
 }
