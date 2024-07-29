@@ -2,6 +2,7 @@
 #include <fstream>
 #include "Parse.h"
 #include "Syntax.hpp"
+#include "Execute.hpp"
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -38,5 +39,7 @@ int main(int argc, char *argv[]) {
   // Print The Generated Code
   printCode();
 
+  // Execute Program
+  execute();
   return 0;
 }
