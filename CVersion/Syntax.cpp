@@ -635,17 +635,11 @@ int line(){
   }
 
   // Print Line
-
   cout << "Line at " << lineNum << endl;
 
   if (genStatement()) return 1;
-
   // Loop Through Tokens Until CR is Found
   Token currentToken = tl ->tokenList.front();
-  // while(currentToken.tokenType != keyword::CR && !tl -> tokenList.empty()){
-  //   tl -> tokenList.pop_front();
-  //   currentToken = tl ->tokenList.front();
-  // }
 
   // Line must end with a CR or END OF FILE
   if (tl ->tokenList.front().tokenType == keyword::CR ){
@@ -689,15 +683,12 @@ void printToFile(){
 
   // Print Instructions
   int size = instructs.size();
-  // for(int i = 0; i < size; i+= 3 ){
-  //   output << instructs[i] << ' ' << instructs[i+1] << ' ' << instructs[i+2] << endl;
-  // }
 
   for(int i = 0; i < size; i++ ){
     if (i%3 == 0) output << endl;
     output << instructs[i] << ' ';
   }
-  output << "\0\0";
+  output << '\0'<< '\0';
   output << endl;
 
   // Print Strings
@@ -705,7 +696,8 @@ void printToFile(){
     output << s << '\0';
   }
 
-  output << "\0\0";
+  output << '\0';
+
   output << endl;
 
 

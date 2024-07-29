@@ -1,5 +1,5 @@
-30 LET C = 60 / 3 + ( 9 + 11 )
-10 LET A = 10
-20 PRINT A, "Howdy Partner"
 5 PRINT "OHH BOY!"
 40 PRINT "IT'S HIGH NOON"
+20 PRINT A, "Howdy Partner"
+10 LET A = 10
+30 LET C = 60 / 3 + ( 9 + 11 )
