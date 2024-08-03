@@ -2,6 +2,30 @@
 #include <fstream>
 #include <vector>
 using namespace std;
+vector<int> memory;
+int strptr;
+int varptr;
+int stackPtr;
+
+void printMemory(){
+
+  cout << "===== MEMORY CONTENTS =====" << endl;
+
+  int size = memory.size();
+  for(int i = 0; i < size; i++){
+    if (i == strptr){
+      cout << "-- Strings --" << endl;
+    } else if (i == varptr){
+      cout << "-- Vars --" << endl;
+    } else if (i == stackPtr){
+      cout << "-- Stack --" << endl;
+    }
+    cout << memory[i] << endl;
+
+  }
+
+
+}
 int execute(){
 
   ifstream input;
@@ -11,7 +35,6 @@ int execute(){
   char c;
   int n;
 
-  vector<int> memory;
   int instruction;
 
   // Parsing Instructions
@@ -27,12 +50,17 @@ int execute(){
     cout << instruction<< endl;
   }
 
+  strptr = memory.size();
+
+
+
   vector<char> strings;
 
   // Parsing Strings
   while (input.get(c)){
     input.get(c);
     cout << c;
+    memory.push_back(c);
     if(c == '\0') {
       input >> c;
       cout<< c;
@@ -48,6 +76,13 @@ int execute(){
 
   }
 
+  varptr = memory.size();
+
+  // Adding Vars and Stack Space
+  memory.resize(memory.size() + 526 , 0);
+  stackPtr = memory.size();
+
+
   // Parsing Line Address
   cout << endl;
   while (input >> n) {
@@ -57,6 +92,8 @@ int execute(){
 
 
   cout <<  (input.good()) << endl;
+
+  printMemory();
 
   return 1;
 }
