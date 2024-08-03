@@ -2,4 +2,5 @@
 40 PRINT "IT'S HIGH NOON"
 20 PRINT A, "Howdy Partner"
 10 LET A = 10
+11 LET B = A + 2
 30 LET C = 60 / 3 + ( 9 + 11 )

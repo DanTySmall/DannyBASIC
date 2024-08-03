@@ -50,6 +50,15 @@ void printStack(){
   cout << endl;
 }
 
+void printVars(){
+
+  cout << "===== Variables =====" << endl;
+  for (int i = varptr; i <= varptr + 25; i++){
+    cout <<(char)('A' + i - varptr) << " : " << memory[i] << ' '<< endl;
+  }
+
+  cout << endl;
+}
 
 int run () {
   int program_counter = 0;
@@ -61,6 +70,8 @@ int run () {
     ir[0] = memory[program_counter];
     ir[1] = memory[program_counter + 1];
     ir[2] = memory[program_counter + 2];
+
+    cout << endl<< ir[0] << " " << ir[1] << " " << ir[2] << endl;
 
     // Execute
     switch (ir[0]) {
@@ -80,26 +91,32 @@ int run () {
         memory[stackPtr + 1] = memory[stackPtr + 1] - memory[stackPtr];
         stackPtr = stackPtr + 1;
         break;
+
       case 3:
         memory[stackPtr + 1] = memory[stackPtr + 1] * memory[stackPtr];
         stackPtr = stackPtr + 1;
         break;
+
       case 4:
         memory[stackPtr + 1] = memory[stackPtr + 1] / memory[stackPtr];
         stackPtr = stackPtr + 1;
         break;
+
       case 5:
         memory[stackPtr + 1] = memory[stackPtr + 1] == memory[stackPtr];
         stackPtr = stackPtr + 1;
         break;
+
       case 6:
         memory[stackPtr + 1] = memory[stackPtr + 1] != memory[stackPtr];
         stackPtr = stackPtr + 1;
         break;
+
       case 7:
         memory[stackPtr + 1] = memory[stackPtr + 1] < memory[stackPtr];
         stackPtr = stackPtr + 1;
         break;
+
       case 8:
         memory[stackPtr + 1] = memory[stackPtr + 1] <= memory[stackPtr];
         stackPtr = stackPtr + 1;
@@ -114,8 +131,17 @@ int run () {
         stackPtr = stackPtr + 1;
         break;
       }
-
       break;
+
+    case 3:
+       stackPtr = stackPtr - 1;
+       memory[stackPtr] = memory[varptr + ir[2]];
+       break;
+
+    case 4:
+      memory[varptr + ir[2]] = memory[stackPtr];
+      stackPtr = stackPtr + 1;
+
     }
 
     printStack();
@@ -124,6 +150,7 @@ int run () {
 
   }
 
+  printVars();
   return 1;
 }
 
