@@ -57,17 +57,18 @@ int run () {
   int ir[3];
   while(!endOfProgram){
 
-
+    // Fetch
     ir[0] = memory[program_counter];
     ir[1] = memory[program_counter + 1];
     ir[2] = memory[program_counter + 2];
 
-
+    // Execute
     switch (ir[0]) {
     case 1: // Literal
       stackPtr = stackPtr - 1;
       memory[stackPtr] = ir[2];
       break;
+
     case 2: // Math Operations / Return
       switch (ir[2]) {
       case 1:
@@ -75,6 +76,43 @@ int run () {
         stackPtr = stackPtr + 1;
         break;
 
+      case 2:
+        memory[stackPtr + 1] = memory[stackPtr + 1] - memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
+      case 3:
+        memory[stackPtr + 1] = memory[stackPtr + 1] * memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
+      case 4:
+        memory[stackPtr + 1] = memory[stackPtr + 1] / memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
+      case 5:
+        memory[stackPtr + 1] = memory[stackPtr + 1] == memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
+      case 6:
+        memory[stackPtr + 1] = memory[stackPtr + 1] != memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
+      case 7:
+        memory[stackPtr + 1] = memory[stackPtr + 1] < memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
+      case 8:
+        memory[stackPtr + 1] = memory[stackPtr + 1] <= memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
+
+      case 9:
+        memory[stackPtr + 1] = memory[stackPtr + 1] >  memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
+      case 10:
+        memory[stackPtr + 1] = memory[stackPtr + 1] >= memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
       }
 
       break;
