@@ -17,6 +17,7 @@ public:
   }
 
 };
+
 vector<LineAddress> lines;
 
 void printMemory(){
@@ -37,6 +38,55 @@ void printMemory(){
   }
 
 
+}
+
+void printStack(){
+
+  cout << "===== Stack =====" << endl;
+  for (int i = memory.size() - 1; i >= stackPtr; i--){
+    cout << memory[i] << ' ';
+  }
+
+  cout << endl;
+}
+
+
+int run () {
+  int program_counter = 0;
+  int endOfProgram = 0;
+  int ir[3];
+  while(!endOfProgram){
+
+
+    ir[0] = memory[program_counter];
+    ir[1] = memory[program_counter + 1];
+    ir[2] = memory[program_counter + 2];
+
+
+    switch (ir[0]) {
+    case 1: // Literal
+      stackPtr = stackPtr - 1;
+      memory[stackPtr] = ir[2];
+      break;
+    case 2: // Math Operations / Return
+      switch (ir[2]) {
+      case 1:
+        memory[stackPtr + 1] = memory[stackPtr + 1] + memory[stackPtr];
+        stackPtr = stackPtr + 1;
+        break;
+
+      }
+
+      break;
+    }
+
+    printStack();
+    program_counter += 3;
+    if(program_counter >= strptr) endOfProgram = 1;
+
+  }
+
+  return 1;
 }
 
 int execute(){
@@ -107,6 +157,10 @@ int execute(){
   }
 
   // printMemory();
+
+  run();
+
+
 
   return 1;
 }
