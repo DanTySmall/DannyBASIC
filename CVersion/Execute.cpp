@@ -7,6 +7,18 @@ int strptr;
 int varptr;
 int stackPtr;
 
+class LineAddress {
+public:
+  int lineNum;
+  int instructPtr;
+  LineAddress(int lineNum, int instructPtr){
+    this->lineNum = lineNum;
+    this->instructPtr = instructPtr;
+  }
+
+};
+vector<LineAddress> lines;
+
 void printMemory(){
 
   cout << "===== MEMORY CONTENTS =====" << endl;
@@ -26,6 +38,7 @@ void printMemory(){
 
 
 }
+
 int execute(){
 
   ifstream input;
@@ -51,9 +64,6 @@ int execute(){
   }
 
   strptr = memory.size();
-
-
-
   vector<char> strings;
 
   // Parsing Strings
@@ -82,18 +92,21 @@ int execute(){
   memory.resize(memory.size() + 526 , 0);
   stackPtr = memory.size();
 
-
   // Parsing Line Address
   cout << endl;
+  int m;
   while (input >> n) {
-    cout << n << endl;
+    input >> m;
+    lines.push_back(LineAddress(n,m));
     input.get(c);
   }
 
+  for (LineAddress l : lines){
 
-  cout <<  (input.good()) << endl;
+    cout << l.lineNum << " , " <<  l.instructPtr << endl;
+  }
 
-  printMemory();
+  // printMemory();
 
   return 1;
 }
