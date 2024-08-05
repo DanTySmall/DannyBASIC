@@ -23,12 +23,12 @@ int main(int argc, char *argv[]) {
   source.open("test.bsc");
 
   // Parses Source File
-  cout << "===== Parsing Source File =====" << endl;
+  // cout << "===== Parsing Source File =====" << endl;
   TokenList* tl = startParse(&source);
 
   // DEBUG: Prints All Tokens
-  tl->printAllTokens();
-  cout << endl << endl;
+  // tl->printAllTokens();
+  // cout << endl << endl;
 
   // Closes File and Exits Program
   source.close();
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
   generateCode(tl);
 
   // Print The Generated Code
-  printCode();
+  // printCode();
 
   // Execute Program
   execute();

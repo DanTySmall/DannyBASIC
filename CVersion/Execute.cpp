@@ -91,7 +91,7 @@ int run () {
     ir[2] = memory[program_counter + 2];
     program_counter += 3;
 
-    cout << endl<< ir[0] << " " << ir[1] << " " << ir[2] << endl;
+    // cout << endl<< ir[0] << " " << ir[1] << " " << ir[2] << endl;
 
     // Execute
     switch (ir[0]) {
@@ -222,12 +222,12 @@ int run () {
 
     }
 
-    printStack();
+    // printStack();
     if(program_counter >= strptr) endOfProgram = 1;
 
   }
 
-  printVars();
+  // printVars();
   return 1;
 }
 
@@ -235,7 +235,7 @@ int execute(){
 
   ifstream input;
   input.open("output.dyb");
-  cout << "Im Executing" << endl;
+  // cout << "Im Executing" << endl;
 
   char c;
   int n;
@@ -247,12 +247,12 @@ int execute(){
     memory.push_back(instruction);
     input >> c;
     if(c == '\0') {
-      cout<< "break" << endl;
+      // cout<< "break" << endl;
       break;
     }else{
       input.putback(c);
     }
-    cout << instruction<< endl;
+    // cout << instruction<< endl;
   }
 
    input.putback(c);
@@ -267,12 +267,12 @@ int execute(){
    input.get(c);
   }
   input.putback(c);
-  cout << "String at 0" << endl;
+  // cout << "String at 0" << endl;
   int position = 1;
   while (input.get(c)){
 
     // input.get(c);
-    cout << c;
+    // cout << c;
     memory.push_back(c);
     if(c == '\0') { // End
 
@@ -283,7 +283,7 @@ int execute(){
         break;
       }else{ // End of Single String
         strings.push_back(strptr + position  );
-        cout << "String at " << position << endl;
+        // cout << "String at " << position << endl;
         // memory.push_back(c);
         input.putback(c);
       }
@@ -294,24 +294,24 @@ int execute(){
   }
 
 
-  cout << endl << "===== Strings Collected =====" << endl;
+  // cout << endl << "===== Strings Collected =====" << endl;
 
-  for(int i = 0; i < strings.size(); i++){
+  // for(int i = 0; i < strings.size(); i++){
 
-    for (int j = strings[i];
-         memory[j] != '\0';
-         j++){
-      cout << (char)memory[j];
-    }
-    cout << endl;
+  //   for (int j = strings[i];
+  //        memory[j] != '\0';
+  //        j++){
+  //     cout << (char)memory[j];
+  //   }
+  //   cout << endl;
 
-  }
+  // }
 
-  cout << "===== String Memory =====" << endl;
+  // cout << "===== String Memory =====" << endl;
 
-  for(int i = strptr; i < memory.size(); i++){
-    cout << (char)memory[i];
-  }
+  // for(int i = strptr; i < memory.size(); i++){
+  //   cout << (char)memory[i];
+  // }
 
 
 
@@ -330,10 +330,10 @@ int execute(){
     input.get(c);
   }
 
-  for (LineAddress l : lines){
+  // for (LineAddress l : lines){
 
-    cout << l.lineNum << " , " <<  l.instructPtr << endl;
-  }
+  //   cout << l.lineNum << " , " <<  l.instructPtr << endl;
+  // }
 
   // printMemory();
 

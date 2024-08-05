@@ -162,11 +162,11 @@ int factor(){
   if (currentToken.tokenType == keyword::ID){
 
     emit(3,0,currentToken.name.at(0) - 'A');
-    cout << "LOD 0 " << (int)(currentToken.name.at(0) - 'A') << endl;
+    // cout << "LOD 0 " << (int)(currentToken.name.at(0) - 'A') << endl;
     tl -> tokenList.pop_front();
   }else if (currentToken.tokenType == keyword::NUMBER){
     emit(1,0,currentToken.number);
-    cout << "LIT 0 " << currentToken.number << endl;
+    // cout << "LIT 0 " << currentToken.number << endl;
     tl -> tokenList.pop_front();
   }else if (currentToken.tokenType == keyword::PARENL){
     tl -> tokenList.pop_front();
@@ -195,12 +195,12 @@ int term(){
       tl -> tokenList.pop_front();
       factor();
       emit(2,0,3);
-      cout << "MULT 0 3" << endl;
+      // cout << "MULT 0 3" << endl;
     }else if (currentToken.tokenType == keyword::DIV){
       tl -> tokenList.pop_front();
       factor();
       emit(2,0,4);
-      cout << "DIV 0 4" << endl;
+      // cout << "DIV 0 4" << endl;
     }
 
     currentToken = tl -> tokenList.front();
@@ -228,9 +228,9 @@ int expression() {
   // If First Term is Negative
   if(sign == -1){
     emit(1, 0, -1);
-    cout << "LIT 0 -1" << endl;
+    // cout << "LIT 0 -1" << endl;
     emit(2, 0, 3);
-    cout << "MULT 0 3" << endl;
+    // cout << "MULT 0 3" << endl;
   }
 
   // ADD or SUB
@@ -239,12 +239,12 @@ int expression() {
       tl -> tokenList.pop_front();
       term();
       emit(2, 0, 1);
-      cout << "ADD 0 1 " << endl;
+      // cout << "ADD 0 1 " << endl;
     }else if (currentToken.tokenType == keyword::SUB){
       tl -> tokenList.pop_front();
       term();
       emit(2, 0, 3);
-      cout << "SUB 0 2" << endl;
+      // cout << "SUB 0 2" << endl;
     }
 
 
@@ -270,16 +270,18 @@ int expressionList(){
   // Check if an Expression or String
   if (currentToken.tokenType == keyword::STRING){
 
-    cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
-    cout << "SYS 1 " << addString(currentToken.contents) << endl;
+    // cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
+    // cout << "SYS 1 " << addString(currentToken.contents) << endl;
+    addString(currentToken.contents);
     emit(9,1,stringData.size() -1);
     tl -> tokenList.pop_front();
     currentToken = tl -> tokenList.front();
 
   }else{
 
-      cout << "PRINT EXPRESSION" << endl;
-      expression(); cout << "SYS 0 0" << endl;
+      // cout << "PRINT EXPRESSION" << endl;
+      expression();
+      // cout << "SYS 0 0" << endl;
           emit(9,0,1);
       currentToken = tl -> tokenList.front();
       while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
@@ -298,14 +300,15 @@ int expressionList(){
         tl -> tokenList.pop_front();
         currentToken = tl -> tokenList.front();
         if (currentToken.tokenType == keyword::STRING){
-          cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
-          cout << "SYS 1 " << addString(currentToken.contents) << endl;
+          // cout<< "PRINT STRING \""<< currentToken.contents << "\"" << endl;
+          addString(currentToken.contents);
           emit(9,1,stringData.size() -1);
           tl -> tokenList.pop_front();
           currentToken = tl -> tokenList.front();
         }else{
-          cout << "PRINT EXPRESSION" << endl;
-          expression(); cout << "SYS 0 0" << endl;
+          // cout << "PRINT EXPRESSION" << endl;
+          expression();
+          // cout << "SYS 0 0" << endl;
           emit(9,0,1);
           currentToken = tl -> tokenList.front();
           while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
@@ -327,12 +330,12 @@ int expressionList(){
 int relop(keyword rel){
 
   switch (rel) {
-  case LSS:{emit(2,0,7); cout << "LSS 0 7" << endl;break;}
-  case EQL:{ emit(2,0,5); cout << "EQL 0 5" << endl;break;}
-  case NEQ:{ emit(2,0,6); cout << "NEQ 0 6" << endl;break;}
-  case LEQ:{ emit(2,0,6); cout << "LEQ 0 8" << endl;break;}
-  case GTR:{ emit(2,0,9); cout << "GTR 0 9" << endl;break;}
-  case GEQ:{ emit(2,0,10); cout << "GEQ 0 10" << endl;break;}
+  case LSS:{emit(2,0,7); /*cout << "LSS 0 7" << endl;*/break;}
+  case EQL:{ emit(2,0,5); /*cout << "EQL 0 5" << endl;*/break;}
+  case NEQ:{ emit(2,0,6); /*cout << "NEQ 0 6" << endl;*/break;}
+  case LEQ:{ emit(2,0,6); /*cout << "LEQ 0 8" << endl;*/break;}
+  case GTR:{ emit(2,0,9); /*cout << "GTR 0 9" << endl;*/break;}
+  case GEQ:{ emit(2,0,10); /*cout << "GEQ 0 10" << endl;*/break;}
   default:
     cout << "ERROR: Invalid Relative Operator" << endl;
     exit(1);
@@ -356,7 +359,7 @@ int generateIF(){
   expression();
   relop(rel);
 
-  cout << "JPC 0 0" << endl;
+  // cout << "JPC 0 0" << endl;
   emit(8,0,0);
 
 
@@ -408,7 +411,7 @@ int generateGOTO(){
 
   // NOTE: New Commnad ( Jumps to Line Number at Top of Stack )
   emit(7,1, 0);
-  cout << "JMP 1 0" << endl;
+  // cout << "JMP 1 0" << endl;
 
   return 1;
 }
@@ -421,9 +424,9 @@ int varList(){
     exit(1);
   }
 
-  cout << "SYS 0 2" << endl;
+  // cout << "SYS 0 2" << endl;
   emit(9,0,2);
-  cout << "STO 0 " << (currentToken.name.at(0) - 'A') <<  endl;
+  // cout << "STO 0 " << (currentToken.name.at(0) - 'A') <<  endl;
   emit(4,0,(currentToken.name.at(0) - 'A'));
 
   tl -> tokenList.pop_front();
@@ -439,9 +442,9 @@ int varList(){
       exit(1);
     }
 
-    cout << "SYS 0 2" << endl;
+    // cout << "SYS 0 2" << endl;
     emit(9,0,2);
-    cout << "STO 0 " << (currentToken.name.at(0) - 'A') <<  endl;
+    // cout << "STO 0 " << (currentToken.name.at(0) - 'A') <<  endl;
     emit(4,0,(currentToken.name.at(0) - 'A'));
 
     tl -> tokenList.pop_front();
@@ -494,7 +497,7 @@ int generateLET(){
 
   expression();
   emit(4,0,var);
-  cout << "STO 0 " << var << endl;
+  // cout << "STO 0 " << var << endl;
 
   return 1;
 }
@@ -549,9 +552,9 @@ int generateCLEAR(){
 
 
     emit (1,0,0);
-    cout << "LIT 0 0" << endl;
+    // cout << "LIT 0 0" << endl;
     emit (4,0,i);
-    cout << "STO 0 " << i << endl;
+    // cout << "STO 0 " << i << endl;
   }
 
   return 1;
@@ -599,17 +602,24 @@ int genStatement(){
  Token currentToken = tl -> tokenList.front();
  switch (currentToken.tokenType) {
 
- case keyword::PRINT: {cout << "This is a PRINT Statement" << endl; generatePRINT(); break;}
- case keyword::IF: {cout << "This is a IF Statement" << endl; generateIF(); break;}
- case keyword::GOTO: {cout << "This is a GOTO Statement" << endl; generateGOTO(); break;}
- case keyword::INPUT: {cout << "This is a INPUT Statement" << endl; generateINPUT(); break;}
- case keyword::LET: {cout << "This is a LET Statement" << endl; generateLET(); break;}
- case keyword::GOSUB: {cout << "This is a GOSUB Statement" << endl; generateGOSUB(); break;}
- case keyword::RETURN: {cout << "This is a RETURN Statement" << endl; generateRETURN(); break;}
- case keyword::CLEAR: {cout << "This is a CLEAR Statement" << endl; generateCLEAR(); break;}
+ case keyword::PRINT: {/*cout << "This is a PRINT Statement" << endl;*/ generatePRINT(); break;}
+ case keyword::IF: {/*cout << "This is a IF Statement" << endl;*/ generateIF(); break;}
+ case keyword::GOTO: {/*cout << "This is a GOTO Statement" << endl;*/ generateGOTO(); break;}
+ case keyword::INPUT: {// cout << "This is a INPUT Statement" << endl;
+     generateINPUT(); break;}
+ case keyword::LET: {// cout << "This is a LET Statement" << endl;
+     generateLET(); break;}
+ case keyword::GOSUB: {// cout << "This is a GOSUB Statement" << endl;
+     generateGOSUB(); break;}
+ case keyword::RETURN: {// cout << "This is a RETURN Statement" << endl;
+     generateRETURN(); break;}
+ case keyword::CLEAR: {// cout << "This is a CLEAR Statement" << endl;
+     generateCLEAR(); break;}
  // case keyword::LIST: {cout << "This is a LIST Statement" << endl; break;} // FOR INTERPRETER VERSION
- case keyword::RUN: {cout << "This is a RUN Statement" << endl; generateRUN(); return 1; break;}
- case keyword::END: {cout << "This is a END Statement" << endl; generateEND(); break;}
+ case keyword::RUN: {// cout << "This is a RUN Statement" << endl;
+     generateRUN(); return 1; break;}
+ case keyword::END: {// cout << "This is a END Statement" << endl;
+     generateEND(); break;}
  default: {cout << "ERROR: String cant be parsed"; exit(1);}
 
  }
@@ -635,7 +645,7 @@ int line(){
   }
 
   // Print Line
-  cout << "Line at " << lineNum << endl;
+  // cout << "Line at " << lineNum << endl;
 
   if (genStatement()) return 1;
   // Loop Through Tokens Until CR is Found
@@ -657,16 +667,16 @@ void printToFile();
 int generateCode(TokenList* tklist){
 
   tl = tklist;
-  cout << "===== Code Generation =====" << endl;
+  // cout << "===== Code Generation =====" << endl;
 
   // Keep Generating Code Until No Token Left
   while(tl -> tokenList.empty() == false){
 
     if(line()) break;
-    cout << endl;
+    // cout << endl;
   }
 
-  cout << endl;
+  // cout << endl;
 
   printToFile();
 
