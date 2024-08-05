@@ -280,7 +280,7 @@ int expressionList(){
 
       cout << "PRINT EXPRESSION" << endl;
       expression(); cout << "SYS 0 0" << endl;
-          emit(9,0,0);
+          emit(9,0,1);
       currentToken = tl -> tokenList.front();
       while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
         tl -> tokenList.pop_front();
@@ -306,7 +306,7 @@ int expressionList(){
         }else{
           cout << "PRINT EXPRESSION" << endl;
           expression(); cout << "SYS 0 0" << endl;
-          emit(9,0,0);
+          emit(9,0,1);
           currentToken = tl -> tokenList.front();
           while(currentToken.tokenType != keyword::CR && currentToken.tokenType != keyword::COMMA && !tl -> tokenList.empty()){
             tl -> tokenList.pop_front();

@@ -3,9 +3,12 @@
 #include <vector>
 using namespace std;
 vector<int> memory;
+vector<int> strings;
 int strptr;
 int varptr;
 int stackPtr;
+int basePtr = 0;
+
 
 class LineAddress {
 public:
@@ -42,7 +45,7 @@ void printMemory(){
 
 void printStack(){
 
-  cout << "===== Stack =====" << endl;
+  cout << endl << "===== Stack =====" << endl;
   for (int i = memory.size() - 1; i >= stackPtr; i--){
     cout << memory[i] << ' ';
   }
@@ -60,6 +63,22 @@ void printVars(){
   cout << endl;
 }
 
+int findLinePtr(int line){
+
+  for(LineAddress l : lines){
+    if (l.lineNum == line){
+      return l.instructPtr;
+      break;
+    }
+  }
+
+  // If this is reach the Line Number does not exist
+  cout << "ERROR: Line " << memory[stackPtr] << " does not exit" << endl;
+  exit(1);
+
+}
+
+
 int run () {
   int program_counter = 0;
   int endOfProgram = 0;
@@ -70,6 +89,7 @@ int run () {
     ir[0] = memory[program_counter];
     ir[1] = memory[program_counter + 1];
     ir[2] = memory[program_counter + 2];
+    program_counter += 3;
 
     cout << endl<< ir[0] << " " << ir[1] << " " << ir[2] << endl;
 
@@ -141,11 +161,68 @@ int run () {
     case 4:
       memory[varptr + ir[2]] = memory[stackPtr];
       stackPtr = stackPtr + 1;
+      break;
+
+    case 5:
+      memory[stackPtr - 1] = basePtr;
+      memory[stackPtr - 2] = program_counter;
+      basePtr = stackPtr - 1;
+      program_counter = findLinePtr(ir[2]);
+      stackPtr = stackPtr - 2;
+      break;
+
+    // case 6: INC not needed, no local variable
+
+    case 7 :
+      if(ir[1] != 1){
+        cout << "I don't know how you got here." << endl;
+        exit(1);
+      }
+
+      program_counter = findLinePtr(memory[stackPtr]);
+      stackPtr = stackPtr - 1;
+      break;
+
+    case 8:
+      if (memory[stackPtr] == 0){
+        program_counter = ir[2];
+      }
+      stackPtr = stackPtr - 1;
+      break;
+
+    case 9:
+      if(ir[1] == 1){ // Printing
+
+        for (int position = strings[ir[2]];
+             position < memory.size() && memory[position] != '\0';
+             position++){
+          cout << (char) memory[position];
+        }
+        break;
+
+      }
+      switch(ir[2]){
+        case 1:
+            cout << memory[stackPtr] << endl;
+            stackPtr = stackPtr + 1;
+          break;
+
+        case 2:
+          char x;
+          cin.get(x);
+          memory[stackPtr] = ((int) x);
+          stackPtr = stackPtr - 1;
+          break;
+
+        case 3:
+          cout << "Program Ended Successfully";
+          exit(0);
+          break;
+      }
 
     }
 
     printStack();
-    program_counter += 3;
     if(program_counter >= strptr) endOfProgram = 1;
 
   }
@@ -178,28 +255,65 @@ int execute(){
     cout << instruction<< endl;
   }
 
+   input.putback(c);
+
   strptr = memory.size();
-  vector<char> strings;
+  // vector<char> strings;
 
   // Parsing Strings
+  strings.push_back(strptr);
+  input.get(c);
+  while(c == '\0' || c == '\n'){
+   input.get(c);
+  }
+  input.putback(c);
+  cout << "String at 0" << endl;
+  int position = 1;
   while (input.get(c)){
-    input.get(c);
+
+    // input.get(c);
     cout << c;
     memory.push_back(c);
-    if(c == '\0') {
+    if(c == '\0') { // End
+
       input >> c;
-      cout<< c;
-      if(c == '\0'){
+
+      if(c == '\0'){ // End of All Strings
+        // strings.pop_back();
         break;
-      }else{
+      }else{ // End of Single String
+        strings.push_back(strptr + position  );
+        cout << "String at " << position << endl;
+        // memory.push_back(c);
         input.putback(c);
       }
 
-    }else{
-      input.putback(c);
     }
 
+    position++;
   }
+
+
+  cout << endl << "===== Strings Collected =====" << endl;
+
+  for(int i = 0; i < strings.size(); i++){
+
+    for (int j = strings[i];
+         memory[j] != '\0';
+         j++){
+      cout << (char)memory[j];
+    }
+    cout << endl;
+
+  }
+
+  cout << "===== String Memory =====" << endl;
+
+  for(int i = strptr; i < memory.size(); i++){
+    cout << (char)memory[i];
+  }
+
+
 
   varptr = memory.size();
 
