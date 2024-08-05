@@ -191,19 +191,26 @@ int run () {
       break;
 
     case 9:
+
       if(ir[1] == 1){ // Printing
+
+        if(ir[2] == -1) {
+          cout << '\n';
+          break;
+        }
 
         for (int position = strings[ir[2]];
              position < memory.size() && memory[position] != '\0';
              position++){
           cout << (char) memory[position];
         }
+        cout << ' ';
         break;
 
       }
       switch(ir[2]){
         case 1:
-            cout << memory[stackPtr] << endl;
+            cout << memory[stackPtr] << ' ';
             stackPtr = stackPtr + 1;
           break;
 

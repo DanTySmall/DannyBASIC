@@ -396,6 +396,8 @@ int generatePRINT(){
   // Detect List of Expressions and Strings
   expressionList();
 
+  // Every line ends with a \n
+  emit(9,1,-1);
 return 1;
 }
 
