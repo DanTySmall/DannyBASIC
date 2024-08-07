@@ -111,7 +111,7 @@ int addressAtLine(int lineNum){
     }
 
   }
-    cout << endl;
+    // cout << endl;
 
   if(!found) {
     cout << "Error: Undefined Line Number" << endl;
@@ -398,7 +398,8 @@ int generatePRINT(){
 
   // Every line ends with a \n
   emit(9,1,-1);
-return 1;
+
+  return 1;
 }
 
 int generateGOTO(){
@@ -418,6 +419,9 @@ int generateGOTO(){
   return 1;
 }
 
+
+//             This Determines if the vars are being written to or read
+// int varList(int rw){
 int varList(){
 
   Token currentToken = tl -> tokenList.front();

@@ -60,7 +60,7 @@ void printVars(){
     cout <<(char)('A' + i - varptr) << " : " << memory[i] << ' '<< endl;
   }
 
-  cout << endl;
+  // cout << endl;
 }
 
 int findLinePtr(int line){
@@ -102,6 +102,13 @@ int run () {
 
     case 2: // Math Operations / Return
       switch (ir[2]) {
+
+      case 0: // RTN
+        stackPtr = basePtr + 1;
+        program_counter = memory[basePtr - 1];
+        basePtr = memory[stackPtr];
+        break;
+
       case 1:
         memory[stackPtr + 1] = memory[stackPtr + 1] + memory[stackPtr];
         stackPtr = stackPtr + 1;
@@ -329,7 +336,7 @@ int execute(){
   stackPtr = memory.size();
 
   // Parsing Line Address
-  cout << endl;
+  // cout << endl;
   int m;
   while (input >> n) {
     input >> m;
