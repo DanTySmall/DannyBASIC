@@ -8,7 +8,24 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
   // Creating and Opening File Object
-  ifstream source("test.bsc");
+  ifstream source;
+  if(argc < 2) {
+    string filePath;
+    cout << "Enter File Path: ";
+    getline(cin, filePath);
+    ifstream source(filePath);
+
+    while (source.is_open() == 0){
+      cout << "Oops! File Not Not Found. Try Again: ";
+      getline(cin, filePath);
+      source.open(filePath);
+    }
+
+  }else{
+
+    ifstream source(argv[1]);
+
+  }
 
   // File Does Not Exist
   if(!source.good()){
