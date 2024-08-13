@@ -8,12 +8,12 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
   // Creating and Opening File Object
+  string filePath;
   ifstream source;
   if(argc < 2) {
-    string filePath;
     cout << "Enter File Path: ";
     getline(cin, filePath);
-    ifstream source(filePath);
+    source = ifstream(filePath);
 
     while (source.is_open() == 0){
       cout << "Oops! File Not Not Found. Try Again: ";
@@ -23,7 +23,8 @@ int main(int argc, char *argv[]) {
 
   }else{
 
-    ifstream source(argv[1]);
+    cout << "File: " << argv[1] << endl;
+    source = ifstream(argv[1]);
 
   }
 
@@ -37,7 +38,13 @@ int main(int argc, char *argv[]) {
   source.close();
 
   // Reset file pointer and start parsing
-  source.open("test.bsc");
+  if(argc < 2) {
+
+    source.open(filePath);
+  } else {
+
+    source.open(argv[1]);
+  }
 
   // Parses Source File
   // cout << "===== Parsing Source File =====" << endl;
@@ -54,7 +61,7 @@ int main(int argc, char *argv[]) {
   generateCode(tl);
 
   // Print The Generated Code
-  // printCode();
+  printCode();
 
   // Execute Program
   execute();
