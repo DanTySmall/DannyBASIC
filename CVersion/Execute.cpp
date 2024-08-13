@@ -180,7 +180,7 @@ int run () {
 
     // case 6: INC not needed, no local variable
 
-    case 7 :
+    case 7:
       if(ir[1] != 1){
         cout << "I don't know how you got here." << endl;
         exit(1);
@@ -194,7 +194,7 @@ int run () {
       if (memory[stackPtr] == 0){
         program_counter = ir[2];
       }
-      stackPtr = stackPtr - 1;
+      stackPtr = stackPtr + 1;
       break;
 
     case 9:
@@ -216,22 +216,22 @@ int run () {
 
       }
       switch(ir[2]){
-        case 1:
-            cout << memory[stackPtr] << ' ';
-            stackPtr = stackPtr + 1;
-          break;
+      case 1:
+        cout << memory[stackPtr] << ' ';
+        stackPtr = stackPtr + 1;
+        break;
 
-        case 2:
-          char x;
-          cin.get(x);
-          memory[stackPtr] = ((int) x);
-          stackPtr = stackPtr - 1;
-          break;
+      case 2:
+        char x;
+        cin.get(x);
+        memory[stackPtr] = ((int) x);
+        stackPtr = stackPtr - 1;
+        break;
 
-        case 3:
-          cout << "Program Ended Successfully";
-          exit(0);
-          break;
+      case 3:
+        cout << "Program Ended Successfully";
+        exit(0);
+        break;
       }
 
     }

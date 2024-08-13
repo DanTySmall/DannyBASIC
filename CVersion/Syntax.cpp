@@ -64,8 +64,10 @@ void printCode(){
       case 1: cout << "SIN "; break;
       case 2: cout << "HLT "; break;
       }break;
-    }
+    default:
+      cout << instructs[i] << " ";
 
+    }
     cout << instructs[i+1] << " " << instructs[i+2] << endl;
   }
 
@@ -259,7 +261,7 @@ int addString(string str){
   // Add string to string vector and return its position
 
   stringData.push_back(str);
-  return stringData.size() - 1;
+  return stringData.size() -1;
 
 }
 
@@ -364,7 +366,7 @@ int generateIF(){
 
 
   // Save Location of JPC Command
-  int jumpIndex = instructs.size();
+  int jumpIndex = instructs.size() - 1;
 
   //====== Condition is finished =====
   Token currentToken = tl -> tokenList.front();
