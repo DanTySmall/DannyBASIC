@@ -222,10 +222,10 @@ int run () {
         break;
 
       case 2:
-        char x;
-        cin.get(x);
-        memory[stackPtr] = ((int) x);
         stackPtr = stackPtr - 1;
+        int x;
+        cin >> x;
+        memory[stackPtr] = x;
         break;
 
       case 3:
@@ -237,6 +237,7 @@ int run () {
     }
 
     // printStack();
+    // printMemory();
     if(program_counter >= strptr) endOfProgram = 1;
 
   }
@@ -349,7 +350,6 @@ int execute(){
   //   cout << l.lineNum << " , " <<  l.instructPtr << endl;
   // }
 
-  // printMemory();
 
   run();
 

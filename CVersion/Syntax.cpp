@@ -332,7 +332,7 @@ int expressionList(){
 int relop(keyword rel){
 
   switch (rel) {
-  case LSS:{emit(2,0,7); /*cout << "LSS 0 7" << endl;*/break;}
+  case LSS:{ emit(2,0,7); /*cout << "LSS 0 7" << endl;*/break;}
   case EQL:{ emit(2,0,5); /*cout << "EQL 0 5" << endl;*/break;}
   case NEQ:{ emit(2,0,6); /*cout << "NEQ 0 6" << endl;*/break;}
   case LEQ:{ emit(2,0,6); /*cout << "LEQ 0 8" << endl;*/break;}
@@ -422,8 +422,6 @@ int generateGOTO(){
 }
 
 
-//             This Determines if the vars are being written to or read
-// int varList(int rw){
 int varList(){
 
   Token currentToken = tl -> tokenList.front();
@@ -470,6 +468,7 @@ int generateINPUT(){
     exit(1);
   }
 
+    tl -> tokenList.pop_front();
 
   varList();
 
