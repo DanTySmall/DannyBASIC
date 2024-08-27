@@ -245,7 +245,7 @@ int expression() {
     }else if (currentToken.tokenType == keyword::SUB){
       tl -> tokenList.pop_front();
       term();
-      emit(2, 0, 3);
+      emit(2, 0, 2);
       // cout << "SUB 0 2" << endl;
     }
 
@@ -523,8 +523,8 @@ int generateGOSUB() {
   expression();
   emit(5,0,0);
   cout<< "CAL 0 0" << endl;
-  emit(6,0,2);
-  cout<< "INC 0 2" << endl;
+  // emit(6,0,2);
+  // cout<< "INC 0 2" << endl;
 
   return 1;
 }
@@ -680,12 +680,17 @@ int generateCode(TokenList* tklist){
   while(tl -> tokenList.empty() == false){
 
     if(line()) break;
-    // cout << endl;
   }
 
-  // cout << endl;
 
   printToFile();
+
+  cout << "Line Numbers" << endl;
+  for (LineAddress line: lineNums){
+
+    cout << line.lineNum << ' ' << line.instructPtr << endl;
+
+  }
 
   return 0;
 };

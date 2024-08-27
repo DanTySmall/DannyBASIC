@@ -7,7 +7,7 @@ vector<int> strings;
 int strptr;
 int varptr;
 int stackPtr;
-int basePtr = 0;
+int basePtr;
 
 
 class LineAddress {
@@ -106,7 +106,7 @@ int run () {
       case 0: // RTN
         stackPtr = basePtr + 1;
         program_counter = memory[basePtr - 1];
-        basePtr = memory[stackPtr];
+        basePtr = memory[basePtr];
         break;
 
       case 1:
@@ -171,11 +171,20 @@ int run () {
       break;
 
     case 5:
-      memory[stackPtr - 1] = basePtr;
-      memory[stackPtr - 2] = program_counter;
-      basePtr = stackPtr - 1;
-      program_counter = findLinePtr(ir[2]);
-      stackPtr = stackPtr - 2;
+      int next;
+      next = program_counter;
+      program_counter = findLinePtr(memory[stackPtr]);
+      memory[stackPtr] = basePtr;
+      memory[stackPtr - 1] = next;
+      basePtr = stackPtr;
+      // for(int i = 0; i < memory.size(); i++){
+
+      //   if (i == stackPtr) cout << '|';
+      //   cout << ' ' << memory[i]<< ' ';
+      //   if (i == stackPtr) cout << '|';
+      // }
+      // cout << endl;
+      stackPtr = stackPtr - 1;
       break;
 
     // case 6: INC not needed, no local variable
@@ -187,7 +196,7 @@ int run () {
       }
 
       program_counter = findLinePtr(memory[stackPtr]);
-      stackPtr = stackPtr - 1;
+      stackPtr = stackPtr + 1;
       break;
 
     case 8:
@@ -335,6 +344,7 @@ int execute(){
   // Adding Vars and Stack Space
   memory.resize(memory.size() + 526 , 0);
   stackPtr = memory.size();
+  basePtr = stackPtr;
 
   // Parsing Line Address
   // cout << endl;
