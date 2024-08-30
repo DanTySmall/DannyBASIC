@@ -60,7 +60,6 @@ void printVars(){
     cout <<(char)('A' + i - varptr) << " : " << memory[i] << ' '<< endl;
   }
 
-  // cout << endl;
 }
 
 int findLinePtr(int line){
@@ -90,8 +89,6 @@ int run () {
     ir[1] = memory[program_counter + 1];
     ir[2] = memory[program_counter + 2];
     program_counter += 3;
-
-    // cout << endl<< ir[0] << " " << ir[1] << " " << ir[2] << endl;
 
     // Execute
     switch (ir[0]) {
@@ -177,13 +174,6 @@ int run () {
       memory[stackPtr] = basePtr;
       memory[stackPtr - 1] = next;
       basePtr = stackPtr;
-      // for(int i = 0; i < memory.size(); i++){
-
-      //   if (i == stackPtr) cout << '|';
-      //   cout << ' ' << memory[i]<< ' ';
-      //   if (i == stackPtr) cout << '|';
-      // }
-      // cout << endl;
       stackPtr = stackPtr - 1;
       break;
 
@@ -245,13 +235,10 @@ int run () {
 
     }
 
-    // printStack();
-    // printMemory();
     if(program_counter >= strptr) endOfProgram = 1;
 
   }
 
-  // printVars();
   return 1;
 }
 
@@ -259,11 +246,8 @@ int execute(){
 
   ifstream input;
   input.open("output.dyb");
-  // cout << "Im Executing" << endl;
-
   char c;
   int n;
-
   int instruction;
 
   // Parsing Instructions
@@ -271,18 +255,14 @@ int execute(){
     memory.push_back(instruction);
     input >> c;
     if(c == '\0') {
-      // cout<< "break" << endl;
       break;
     }else{
       input.putback(c);
     }
-    // cout << instruction<< endl;
   }
 
-   input.putback(c);
-
+  input.putback(c);
   strptr = memory.size();
-  // vector<char> strings;
 
   // Parsing Strings
   strings.push_back(strptr);
@@ -291,24 +271,18 @@ int execute(){
    input.get(c);
   }
   input.putback(c);
-  // cout << "String at 0" << endl;
   int position = 1;
   while (input.get(c)){
 
-    // input.get(c);
-    // cout << c;
     memory.push_back(c);
     if(c == '\0') { // End
 
       input >> c;
 
       if(c == '\0'){ // End of All Strings
-        // strings.pop_back();
         break;
       }else{ // End of Single String
         strings.push_back(strptr + position  );
-        // cout << "String at " << position << endl;
-        // memory.push_back(c);
         input.putback(c);
       }
 
@@ -316,28 +290,6 @@ int execute(){
 
     position++;
   }
-
-
-  // cout << endl << "===== Strings Collected =====" << endl;
-
-  // for(int i = 0; i < strings.size(); i++){
-
-  //   for (int j = strings[i];
-  //        memory[j] != '\0';
-  //        j++){
-  //     cout << (char)memory[j];
-  //   }
-  //   cout << endl;
-
-  // }
-
-  // cout << "===== String Memory =====" << endl;
-
-  // for(int i = strptr; i < memory.size(); i++){
-  //   cout << (char)memory[i];
-  // }
-
-
 
   varptr = memory.size();
 
@@ -347,7 +299,6 @@ int execute(){
   basePtr = stackPtr;
 
   // Parsing Line Address
-  // cout << endl;
   int m;
   while (input >> n) {
     input >> m;
@@ -355,12 +306,7 @@ int execute(){
     input.get(c);
   }
 
-  // for (LineAddress l : lines){
-
-  //   cout << l.lineNum << " , " <<  l.instructPtr << endl;
-  // }
-
-
+  input.close();
   run();
 
 

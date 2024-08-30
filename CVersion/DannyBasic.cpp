@@ -47,12 +47,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Parses Source File
-  // cout << "===== Parsing Source File =====" << endl;
   TokenList* tl = startParse(&source);
-
-  // DEBUG: Prints All Tokens
-  // tl->printAllTokens();
-  // cout << endl << endl;
 
   // Closes File and Exits Program
   source.close();

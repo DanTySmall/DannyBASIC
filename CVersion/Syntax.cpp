@@ -729,4 +729,5 @@ void printToFile(){
     output << line.lineNum << ' ' << line.instructPtr << endl;
 
   }
+  output.close();
 }
